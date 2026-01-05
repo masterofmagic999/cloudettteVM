@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
+    "clean": "rm -rf ./node_modules ./package-lock.json ./cloudette.db ./cloudette.db-shm ./cloudette.db-wal",
+    "reinstall": "npm run clean && npm install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -23,6 +25,10 @@
     "url": "https://github.com/masterofmagic999/cloudettteVM.git"
   },
   "license": "ISC",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
     "bcrypt": "^6.0.0",

@@ -5,6 +5,10 @@
 A robust web application hosting a fully functional virtual Linux machine. Users can install apps via terminal or store, with an advanced profile system that persists all data, including installed software and browser history.
 
 > **🚀 Quick Start:** Click the badge above to launch CloudettteVM in GitHub Codespaces instantly!
+> 
+> **📖 Documentation:**
+> - [Setup Guide](./SETUP.md) - Detailed installation and configuration
+> - [Quick Reference](./QUICKREF.md) - Common commands and troubleshooting
 
 ## Features
 
@@ -42,9 +46,11 @@ A robust web application hosting a fully functional virtual Linux machine. Users
 
 ## Installation
 
+> **📖 For detailed setup instructions, see [SETUP.md](./SETUP.md)**
+
 ### Prerequisites
-- Node.js (v14 or higher)
-- npm or yarn
+- Node.js (v20 or higher) - **REQUIRED**
+- npm (v10 or higher)
 - Linux/MacOS (recommended) or Windows with WSL
 
 ### Setup
@@ -73,6 +79,8 @@ http://localhost:3000
 ## 🚀 GitHub Codespaces Setup (Recommended)
 
 CloudettteVM is optimized for GitHub Codespaces! Run it instantly in your browser without any local setup.
+
+> **✅ Automatic Setup:** The devcontainer configuration automatically installs Node.js 20 and all dependencies.
 
 ### Quick Start in Codespaces
 
@@ -106,7 +114,7 @@ CloudettteVM is optimized for GitHub Codespaces! Run it instantly in your browse
 ### Codespaces Configuration
 
 The repository includes a `.devcontainer/devcontainer.json` configuration that:
-- Sets up Node.js 18 environment
+- Sets up Node.js 20 environment (required for dependencies)
 - Installs required VS Code extensions
 - Automatically forwards port 3000
 - Runs `npm install` on creation
@@ -236,25 +244,59 @@ nano myfile.txt
 ## Configuration
 
 ### Environment Variables
+
+CloudettteVM supports configuration through environment variables. See [.env.example](.env.example) for all available options.
+
+**Essential for Production:**
 ```bash
-PORT=3000                    # Server port
-SESSION_SECRET=<secret>      # Session secret key
-NODE_ENV=production          # Environment mode
+# Copy the example file
+cp .env.example .env
+
+# Edit .env and set at minimum:
+SESSION_SECRET=<random-secret>    # Required for security
+NODE_ENV=production               # Sets production mode
 ```
+
+**All Configuration Options:**
+```bash
+PORT=3000                    # Server port (default: 3000)
+HOST=0.0.0.0                # Server host (default: 0.0.0.0)
+SESSION_SECRET=<secret>      # Session secret key (REQUIRED in production)
+NODE_ENV=production          # Environment mode (development/production)
+ALLOWED_ORIGINS=<origins>    # Comma-separated CORS origins
+```
+
+See [SETUP.md](./SETUP.md) for detailed configuration instructions.
 
 ## Development
 
 ### Project Structure
 ```
 cloudettteVM/
-├── server.js              # Main server file
-├── package.json           # Dependencies and scripts
-├── .gitignore            # Git ignore rules
-├── cloudette.db          # SQLite database (auto-created)
-└── public/               # Frontend files
-    ├── index.html        # Main HTML
-    ├── app.js           # Client JavaScript
-    └── styles.css       # Styling
+├── .devcontainer/         # GitHub Codespaces configuration
+│   └── devcontainer.json # Container setup with Node 20
+├── public/               # Frontend files
+│   ├── index.html        # Main HTML
+│   ├── app.js           # Client JavaScript
+│   └── styles.css       # Styling
+├── server.js            # Main server file
+├── package.json         # Dependencies and scripts
+├── .env.example         # Environment variables template
+├── .gitignore          # Git ignore rules
+├── start.sh            # Quick start script
+├── SETUP.md            # Detailed setup guide
+├── QUICKREF.md         # Quick reference commands
+├── README.md           # This file
+└── cloudette.db        # SQLite database (auto-created)
+```
+
+### Available npm Scripts
+
+```bash
+npm start              # Start the server
+npm run dev            # Start in development mode
+npm run clean          # Remove node_modules, database, and lock file
+npm run reinstall      # Clean and reinstall all dependencies
 ```
 
 ### Adding New Features
