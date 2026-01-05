@@ -96,7 +96,9 @@ npm install
 
 #### Database permission errors
 ```bash
-# Remove the database file and restart (data will be lost)
+# Remove the database file and restart (WARNING: This deletes all user data!)
+# Only run this in the cloudettteVM directory
+cd /workspaces/cloudettteVM  # or your project directory
 rm -f cloudette.db cloudette.db-shm cloudette.db-wal
 npm start
 ```

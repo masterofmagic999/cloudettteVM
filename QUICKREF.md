@@ -66,7 +66,9 @@ npm install
 ### Database Issues
 
 ```bash
-# Remove database (WARNING: deletes all data)
+# Remove database (WARNING: This deletes all user data!)
+# IMPORTANT: Ensure you are in the cloudettteVM directory first!
+cd /workspaces/cloudettteVM  # or your project directory path
 rm -f cloudette.db cloudette.db-shm cloudette.db-wal
 
 # Check if database exists
@@ -243,6 +245,8 @@ node -e "const pty = require('node-pty'); console.log('node-pty works!');"
 ### Database locked error
 ```bash
 # Close all connections and restart
+# WARNING: Ensure you're in the cloudettteVM directory
+cd /workspaces/cloudettteVM  # or your project directory
 rm -f cloudette.db-shm cloudette.db-wal
 npm start
 ```
@@ -265,10 +269,13 @@ npm start
 **Need to reset everything?**
 
 ```bash
-# Complete reset (WARNING: deletes all data)
-npm run clean  # if script exists
+# Complete reset (WARNING: This deletes ALL data and dependencies!)
+# CRITICAL: Make absolutely sure you are in the cloudettteVM directory!
+pwd  # Verify you're in the right directory
+cd /workspaces/cloudettteVM  # or your project directory
+npm run clean  # Uses explicit paths for safety
 # or manually:
-rm -rf node_modules package-lock.json cloudette.db*
+rm -rf ./node_modules ./package-lock.json ./cloudette.db*
 npm install
 npm start
 ```
