@@ -154,6 +154,11 @@ const apiLimiter = rateLimit({
 
 app.use(express.static('public'));
 
+// Serve xterm and socket.io from node_modules
+app.use('/xterm', express.static(path.join(__dirname, 'node_modules/xterm')));
+app.use('/xterm-addon-fit', express.static(path.join(__dirname, 'node_modules/xterm-addon-fit')));
+app.use('/socket.io', express.static(path.join(__dirname, 'node_modules/socket.io/client-dist')));
+
 // Authentication middleware
 function requireAuth(req, res, next) {
   if (req.session.userId) {
