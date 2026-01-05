@@ -64,15 +64,22 @@ app.use(helmet({
   contentSecurityPolicy: false,
   crossOriginEmbedderPolicy: false
 }));
-app.use(cors());
+app.use(cors({
+  credentials: true,
+  origin: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(session({
+
+// Session configuration
+const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET || 'cloudette-vm-secret-key-change-in-production',
   resave: false,
   saveUninitialized: false,
   cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 } // 24 hours
-}));
+});
+
+app.use(sessionMiddleware);
 app.use(express.static('public'));
 
 // Authentication middleware
@@ -239,13 +246,17 @@ app.use('/proxy', requireAuth, (req, res, next) => {
 const terminals = {};
 const logs = {};
 
+// Share session with Socket.IO
+io.use((socket, next) => {
+  sessionMiddleware(socket.request, {}, next);
+});
+
 io.on('connection', (socket) => {
   console.log('Client connected');
 
   socket.on('create-terminal', (data) => {
-    const { sessionId } = socket.handshake.query;
-    
-    if (!sessionId) {
+    // Validate user is authenticated via session
+    if (!socket.request.session || !socket.request.session.userId) {
       socket.emit('terminal-error', 'Authentication required');
       return;
     }

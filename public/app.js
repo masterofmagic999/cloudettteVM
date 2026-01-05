@@ -117,14 +117,19 @@ function showAppScreen() {
 }
 
 // Tab navigation
-function showTab(tabName) {
+function showTab(tabName, event) {
     // Remove active class from all tabs and buttons
     document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
 
     // Add active class to selected tab and button
     document.getElementById(`${tabName}-tab`).classList.add('active');
-    event.target.closest('.nav-btn').classList.add('active');
+    if (event) {
+        event.target.closest('.nav-btn').classList.add('active');
+    } else {
+        // If no event, find the button by tabName
+        document.querySelector(`[onclick*="${tabName}"]`)?.classList.add('active');
+    }
 
     // Initialize terminal if switching to terminal tab
     if (tabName === 'terminal' && !terminal) {
@@ -171,10 +176,8 @@ function initializeTerminal() {
     terminal.open(terminalElement);
     fitAddon.fit();
 
-    // Connect to WebSocket
-    socket = io({
-        query: { sessionId: 'user-session' }
-    });
+    // Connect to WebSocket (session handled via cookies)
+    socket = io();
 
     socket.on('connect', () => {
         socket.emit('create-terminal');
@@ -269,15 +272,18 @@ async function loadHistory() {
 
 function loadFromHistory(url) {
     document.getElementById('url-input').value = url;
-    showTab('browser');
-    navigateTo();
+    // Find and click the browser button
+    const browserBtn = document.querySelector('[onclick*="browser"]');
+    if (browserBtn) browserBtn.click();
+    setTimeout(() => navigateTo(), 100);
 }
 
 // App installation functions
 async function installApp(appName, version) {
     try {
         // Show installation in terminal
-        showTab('terminal');
+        const terminalBtn = document.querySelector('[onclick*="terminal"]');
+        if (terminalBtn) terminalBtn.click();
         showToast(`Installing ${appName}...`);
 
         // Track installation

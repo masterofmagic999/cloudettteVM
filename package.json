@@ -24,6 +24,7 @@
   },
   "license": "ISC",
   "dependencies": {
+    "@fontsource/inter": "^5.2.8",
     "bcrypt": "^6.0.0",
     "better-sqlite3": "^12.5.0",
     "cors": "^2.8.5",
