@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudettteVM - Virtual Linux Machine</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" />
+</head>
+<body>
+    <!-- Login/Register Screen -->
+    <div id="auth-screen" class="screen active">
+        <div class="auth-container">
+            <h1>CloudettteVM</h1>
+            <p class="subtitle">Virtual Linux Machine with Secure Proxy</p>
+            
+            <div id="login-form" class="auth-form">
+                <h2>Login</h2>
+                <input type="text" id="login-username" placeholder="Username" />
+                <input type="password" id="login-password" placeholder="Password" />
+                <button onclick="login()">Login</button>
+                <p class="switch-auth">Don't have an account? <a href="#" onclick="showRegister()">Register</a></p>
+            </div>
+
+            <div id="register-form" class="auth-form" style="display: none;">
+                <h2>Register</h2>
+                <input type="text" id="register-username" placeholder="Username" />
+                <input type="password" id="register-password" placeholder="Password" />
+                <button onclick="register()">Register</button>
+                <p class="switch-auth">Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application Screen -->
+    <div id="app-screen" class="screen">
+        <div class="header">
+            <div class="logo">CloudettteVM</div>
+            <div class="user-info">
+                <span id="username-display"></span>
+                <button onclick="logout()" class="btn-logout">Logout</button>
+            </div>
+        </div>
+
+        <div class="main-container">
+            <div class="sidebar">
+                <button class="nav-btn active" onclick="showTab('terminal', event)">
+                    <span class="icon">💻</span> Terminal
+                </button>
+                <button class="nav-btn" onclick="showTab('browser', event)">
+                    <span class="icon">🌐</span> Browser
+                </button>
+                <button class="nav-btn" onclick="showTab('store', event)">
+                    <span class="icon">📦</span> App Store
+                </button>
+                <button class="nav-btn" onclick="showTab('apps', event)">
+                    <span class="icon">📱</span> My Apps
+                </button>
+                <button class="nav-btn" onclick="showTab('history', event)">
+                    <span class="icon">📜</span> History
+                </button>
+            </div>
+
+            <div class="content">
+                <!-- Terminal Tab -->
+                <div id="terminal-tab" class="tab active">
+                    <div class="tab-header">
+                        <h2>Terminal</h2>
+                        <p>Full Linux terminal access - install apps via apt, npm, pip, etc.</p>
+                    </div>
+                    <div id="terminal" class="terminal-container"></div>
+                </div>
+
+                <!-- Browser Tab -->
+                <div id="browser-tab" class="tab">
+                    <div class="tab-header">
+                        <h2>Secure Browser</h2>
+                        <p>Browse the web through our high-speed, secure proxy that bypasses restrictions</p>
+                    </div>
+                    <div class="browser-controls">
+                        <input type="text" id="url-input" placeholder="Enter URL (e.g., https://example.com)" />
+                        <button onclick="navigateTo()">Go</button>
+                        <button onclick="refreshBrowser()">Refresh</button>
+                    </div>
+                    <iframe id="browser-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+                </div>
+
+                <!-- App Store Tab -->
+                <div id="store-tab" class="tab">
+                    <div class="tab-header">
+                        <h2>App Store</h2>
+                        <p>Install popular applications with one click</p>
+                    </div>
+                    <div class="app-grid">
+                        <div class="app-card">
+                            <h3>Node.js</h3>
+                            <p>JavaScript runtime environment</p>
+                            <button onclick="installApp('nodejs', 'latest')">Install</button>
+                        </div>
+                        <div class="app-card">
+                            <h3>Python</h3>
+                            <p>Python programming language</p>
+                            <button onclick="installApp('python3', 'latest')">Install</button>
+                        </div>
+                        <div class="app-card">
+                            <h3>Git</h3>
+                            <p>Version control system</p>
+                            <button onclick="installApp('git', 'latest')">Install</button>
+                        </div>
+                        <div class="app-card">
+                            <h3>Vim</h3>
+                            <p>Text editor</p>
+                            <button onclick="installApp('vim', 'latest')">Install</button>
+                        </div>
+                        <div class="app-card">
+                            <h3>Curl</h3>
+                            <p>Command-line HTTP client</p>
+                            <button onclick="installApp('curl', 'latest')">Install</button>
+                        </div>
+                        <div class="app-card">
+                            <h3>Wget</h3>
+                            <p>Network downloader</p>
+                            <button onclick="installApp('wget', 'latest')">Install</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- My Apps Tab -->
+                <div id="apps-tab" class="tab">
+                    <div class="tab-header">
+                        <h2>My Installed Apps</h2>
+                        <p>Applications installed on your virtual machine</p>
+                    </div>
+                    <div id="installed-apps-list" class="apps-list">
+                        <p class="loading">Loading...</p>
+                    </div>
+                </div>
+
+                <!-- History Tab -->
+                <div id="history-tab" class="tab">
+                    <div class="tab-header">
+                        <h2>Browser History</h2>
+                        <p>Your browsing history (persisted across sessions)</p>
+                    </div>
+                    <div id="history-list" class="history-list">
+                        <p class="loading">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.5.4/dist/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
