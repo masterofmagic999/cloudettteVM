@@ -12,6 +12,8 @@ const helmet = require('helmet');
 const path = require('path');
 const os = require('os');
 const crypto = require('crypto');
+const rateLimit = require('express-rate-limit');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const server = http.createServer(app);
@@ -62,9 +64,20 @@ db.exec(`
 
 // Middleware
 app.use(helmet({
-  contentSecurityPolicy: false,
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdn.jsdelivr.net"],
+      connectSrc: ["'self'", "ws:", "wss:"],
+      frameSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https:"]
+    }
+  },
   crossOriginEmbedderPolicy: false
 }));
+app.use(cookieParser());
 app.use(cors({
   credentials: true,
   origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:3000']
@@ -91,6 +104,23 @@ const sessionMiddleware = session({
 });
 
 app.use(sessionMiddleware);
+
+// Rate limiting
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 requests per windowMs for auth endpoints
+  message: 'Too many attempts, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const apiLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 60, // Limit each IP to 60 requests per minute
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 app.use(express.static('public'));
 
 // Authentication middleware
@@ -103,7 +133,7 @@ function requireAuth(req, res, next) {
 }
 
 // User authentication routes
-app.post('/api/register', async (req, res) => {
+app.post('/api/register', authLimiter, async (req, res) => {
   try {
     const { username, password } = req.body;
     
@@ -143,7 +173,7 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-app.post('/api/login', async (req, res) => {
+app.post('/api/login', authLimiter, async (req, res) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -175,7 +205,7 @@ app.get('/api/user', requireAuth, (req, res) => {
 });
 
 // Browser history routes
-app.post('/api/history', requireAuth, (req, res) => {
+app.post('/api/history', apiLimiter, requireAuth, (req, res) => {
   try {
     const { url, title } = req.body;
     const stmt = db.prepare('INSERT INTO browser_history (user_id, url, title) VALUES (?, ?, ?)');
@@ -186,7 +216,7 @@ app.post('/api/history', requireAuth, (req, res) => {
   }
 });
 
-app.get('/api/history', requireAuth, (req, res) => {
+app.get('/api/history', apiLimiter, requireAuth, (req, res) => {
   try {
     const stmt = db.prepare('SELECT * FROM browser_history WHERE user_id = ? ORDER BY visited_at DESC LIMIT 100');
     const history = stmt.all(req.session.userId);
@@ -197,7 +227,7 @@ app.get('/api/history', requireAuth, (req, res) => {
 });
 
 // Installed apps routes
-app.post('/api/apps/install', requireAuth, (req, res) => {
+app.post('/api/apps/install', apiLimiter, requireAuth, (req, res) => {
   try {
     const { appName, appVersion } = req.body;
     const stmt = db.prepare('INSERT OR REPLACE INTO installed_apps (user_id, app_name, app_version) VALUES (?, ?, ?)');
@@ -208,7 +238,7 @@ app.post('/api/apps/install', requireAuth, (req, res) => {
   }
 });
 
-app.get('/api/apps/installed', requireAuth, (req, res) => {
+app.get('/api/apps/installed', apiLimiter, requireAuth, (req, res) => {
   try {
     const stmt = db.prepare('SELECT * FROM installed_apps WHERE user_id = ? ORDER BY installed_at DESC');
     const apps = stmt.all(req.session.userId);
@@ -219,7 +249,7 @@ app.get('/api/apps/installed', requireAuth, (req, res) => {
 });
 
 // User data persistence routes
-app.post('/api/userdata', requireAuth, (req, res) => {
+app.post('/api/userdata', apiLimiter, requireAuth, (req, res) => {
   try {
     const { dataType, dataKey, dataValue } = req.body;
     const stmt = db.prepare('INSERT OR REPLACE INTO user_data (user_id, data_type, data_key, data_value) VALUES (?, ?, ?, ?)');
@@ -230,7 +260,7 @@ app.post('/api/userdata', requireAuth, (req, res) => {
   }
 });
 
-app.get('/api/userdata/:dataType', requireAuth, (req, res) => {
+app.get('/api/userdata/:dataType', apiLimiter, requireAuth, (req, res) => {
   try {
     const stmt = db.prepare('SELECT * FROM user_data WHERE user_id = ? AND data_type = ?');
     const data = stmt.all(req.session.userId, req.params.dataType);
