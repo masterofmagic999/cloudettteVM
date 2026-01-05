@@ -8,26 +8,74 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" />
 </head>
 <body>
-    <!-- Login/Register Screen -->
+    <!-- Login/Register Screen - Aurora-style -->
     <div id="auth-screen" class="screen active">
-        <div class="auth-container">
-            <h1>CloudettteVM</h1>
-            <p class="subtitle">Virtual Linux Machine with Secure Proxy</p>
+        <div class="auth-background">
+            <div class="auth-glow auth-glow-1"></div>
+            <div class="auth-glow auth-glow-2"></div>
+        </div>
+        <div class="auth-wrapper">
+            <div class="auth-brand">
+                <div class="brand-icon">☁️</div>
+                <h1 class="brand-title">CloudettteVM</h1>
+                <p class="brand-tagline">Your Virtual Linux Desktop in the Cloud</p>
+            </div>
             
-            <div id="login-form" class="auth-form">
-                <h2>Login</h2>
-                <input type="text" id="login-username" placeholder="Username" />
-                <input type="password" id="login-password" placeholder="Password" />
-                <button id="login-btn">Login</button>
-                <p class="switch-auth">Don't have an account? <a href="#" id="show-register-link">Register</a></p>
+            <div class="auth-container">
+                <div id="login-form" class="auth-form">
+                    <div class="auth-form-header">
+                        <h2>Welcome Back</h2>
+                        <p>Enter your credentials to continue</p>
+                    </div>
+                    <div class="auth-form-body">
+                        <div class="input-group">
+                            <label for="login-username">Username</label>
+                            <input type="text" id="login-username" placeholder="Enter your username" />
+                        </div>
+                        <div class="input-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" placeholder="Enter your password" />
+                        </div>
+                        <button id="login-btn" class="auth-btn primary">
+                            <span>Sign In</span>
+                            <span class="btn-arrow">→</span>
+                        </button>
+                    </div>
+                    <div class="auth-form-footer">
+                        <p>Don't have an account? <a href="#" id="show-register-link">Create one</a></p>
+                    </div>
+                </div>
+
+                <div id="register-form" class="auth-form" style="display: none;">
+                    <div class="auth-form-header">
+                        <h2>Create Account</h2>
+                        <p>Join CloudettteVM today</p>
+                    </div>
+                    <div class="auth-form-body">
+                        <div class="input-group">
+                            <label for="register-username">Username</label>
+                            <input type="text" id="register-username" placeholder="Choose a username" />
+                        </div>
+                        <div class="input-group">
+                            <label for="register-password">Password</label>
+                            <input type="password" id="register-password" placeholder="Create a password" />
+                        </div>
+                        <button id="register-btn" class="auth-btn primary">
+                            <span>Create Account</span>
+                            <span class="btn-arrow">→</span>
+                        </button>
+                    </div>
+                    <div class="auth-form-footer">
+                        <p>Already have an account? <a href="#" id="show-login-link">Sign in</a></p>
+                    </div>
+                </div>
             </div>
 
-            <div id="register-form" class="auth-form" style="display: none;">
-                <h2>Register</h2>
-                <input type="text" id="register-username" placeholder="Username" />
-                <input type="password" id="register-password" placeholder="Password" />
-                <button id="register-btn">Register</button>
-                <p class="switch-auth">Already have an account? <a href="#" id="show-login-link">Login</a></p>
+            <div class="auth-features">
+                <div class="feature-chip">💻 Linux Terminal</div>
+                <div class="feature-chip">🌐 Secure Browser</div>
+                <div class="feature-chip">📦 App Store</div>
+                <div class="feature-chip">☁️ Cloud Storage</div>
             </div>
         </div>
     </div>
@@ -115,10 +163,27 @@
                         </div>
                     </div>
                     <div class="window-content">
-                        <div class="browser-controls">
-                            <input type="text" id="url-input" placeholder="Enter URL (e.g., https://example.com)" />
-                            <button id="go-btn">Go</button>
-                            <button id="refresh-btn">↻</button>
+                        <div class="browser-toolbar">
+                            <div class="browser-controls">
+                                <button id="back-btn" class="nav-btn" title="Back">←</button>
+                                <button id="forward-btn" class="nav-btn" title="Forward">→</button>
+                                <button id="refresh-btn" class="nav-btn" title="Refresh">↻</button>
+                            </div>
+                            <div class="browser-url-bar">
+                                <span class="url-icon">🔒</span>
+                                <input type="text" id="url-input" placeholder="Enter URL (e.g., https://example.com)" />
+                            </div>
+                            <button id="go-btn" class="go-btn">Go</button>
+                            <div class="proxy-selector">
+                                <select id="proxy-type" title="Proxy Type">
+                                    <option value="default">Default Proxy</option>
+                                    <option value="scramjet">Scramjet (Coming Soon)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="browser-info-bar">
+                            <span class="proxy-badge">🛡️ Proxied Connection</span>
+                            <span class="proxy-info">Powered by CloudettteVM Secure Proxy • <a href="https://github.com/MercuryWorkshop/scramjet" target="_blank">Scramjet Integration Coming Soon</a></span>
                         </div>
                         <iframe id="browser-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
                     </div>
