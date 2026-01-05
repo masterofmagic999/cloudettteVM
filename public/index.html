@@ -13,72 +13,138 @@
         <div class="auth-background">
             <div class="auth-glow auth-glow-1"></div>
             <div class="auth-glow auth-glow-2"></div>
+            <div class="auth-glow auth-glow-3"></div>
         </div>
         <div class="auth-wrapper">
-            <div class="auth-brand">
-                <div class="brand-icon">☁️</div>
-                <h1 class="brand-title">CloudettteVM</h1>
-                <p class="brand-tagline">Your Virtual Linux Desktop in the Cloud</p>
-            </div>
-            
-            <div class="auth-container">
-                <div id="login-form" class="auth-form">
-                    <div class="auth-form-header">
-                        <h2>Welcome Back</h2>
-                        <p>Enter your credentials to continue</p>
+            <div class="auth-content">
+                <!-- Left Side: Login Form -->
+                <div class="auth-left">
+                    <div class="auth-brand">
+                        <div class="brand-icon">☁️</div>
+                        <h1 class="brand-title">CloudettteVM</h1>
+                        <p class="brand-tagline">Your Virtual Linux Desktop in the Cloud</p>
                     </div>
-                    <div class="auth-form-body">
-                        <div class="input-group">
-                            <label for="login-username">Username</label>
-                            <input type="text" id="login-username" placeholder="Enter your username" />
+                    
+                    <div class="auth-container">
+                        <div id="login-form" class="auth-form">
+                            <div class="auth-form-body">
+                                <div class="input-group">
+                                    <label for="login-username">Username</label>
+                                    <input type="text" id="login-username" placeholder="Enter your username" />
+                                </div>
+                                <div class="input-group">
+                                    <label for="login-password">Password</label>
+                                    <input type="password" id="login-password" placeholder="Enter your password" />
+                                </div>
+                                <button id="login-btn" class="auth-btn primary">
+                                    <span>Sign In</span>
+                                    <span class="btn-arrow">→</span>
+                                </button>
+                                <div class="auth-divider">
+                                    <span>New to CloudettteVM?</span>
+                                </div>
+                                <button id="show-register-btn" class="auth-btn-link">
+                                    Create an account →
+                                </button>
+                            </div>
                         </div>
-                        <div class="input-group">
-                            <label for="login-password">Password</label>
-                            <input type="password" id="login-password" placeholder="Enter your password" />
+
+                        <div id="register-form" class="auth-form" style="display: none;">
+                            <div class="auth-form-body">
+                                <div class="input-group">
+                                    <label for="register-username">Username</label>
+                                    <input type="text" id="register-username" placeholder="Choose a username" />
+                                </div>
+                                <div class="input-group">
+                                    <label for="register-password">Password</label>
+                                    <input type="password" id="register-password" placeholder="Create a password" />
+                                </div>
+                                <button id="register-btn" class="auth-btn primary">
+                                    <span>Create Account</span>
+                                    <span class="btn-arrow">→</span>
+                                </button>
+                                <div class="auth-divider">
+                                    <span>Already have an account?</span>
+                                </div>
+                                <button id="show-login-link" class="auth-btn-link">
+                                    Sign in →
+                                </button>
+                            </div>
                         </div>
-                        <button id="login-btn" class="auth-btn primary">
-                            <span>Sign In</span>
-                            <span class="btn-arrow">→</span>
-                        </button>
-                    </div>
-                    <div class="auth-form-footer">
-                        <button id="show-register-btn" class="auth-btn secondary">
-                            <span>Create New Account</span>
-                        </button>
-                        <p>Don't have an account? <a href="#" id="show-register-link">Create one</a></p>
                     </div>
                 </div>
 
-                <div id="register-form" class="auth-form" style="display: none;">
-                    <div class="auth-form-header">
-                        <h2>Create Account</h2>
-                        <p>Join CloudettteVM today</p>
-                    </div>
-                    <div class="auth-form-body">
-                        <div class="input-group">
-                            <label for="register-username">Username</label>
-                            <input type="text" id="register-username" placeholder="Choose a username" />
+                <!-- Right Side: Info Panel -->
+                <div class="auth-right">
+                    <div class="info-panel">
+                        <div class="info-header">
+                            <h3>✨ System Status</h3>
                         </div>
-                        <div class="input-group">
-                            <label for="register-password">Password</label>
-                            <input type="password" id="register-password" placeholder="Create a password" />
+                        <div class="info-stats">
+                            <div class="stat-card">
+                                <div class="stat-icon">🚀</div>
+                                <div class="stat-content">
+                                    <div class="stat-value" id="uptime-stat">99.9%</div>
+                                    <div class="stat-label">Uptime</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">👥</div>
+                                <div class="stat-content">
+                                    <div class="stat-value" id="users-stat">1,234</div>
+                                    <div class="stat-label">Active Users</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">💾</div>
+                                <div class="stat-content">
+                                    <div class="stat-value" id="storage-stat">∞</div>
+                                    <div class="stat-label">Cloud Storage</div>
+                                </div>
+                            </div>
                         </div>
-                        <button id="register-btn" class="auth-btn primary">
-                            <span>Create Account</span>
-                            <span class="btn-arrow">→</span>
-                        </button>
-                    </div>
-                    <div class="auth-form-footer">
-                        <p>Already have an account? <a href="#" id="show-login-link">Sign in</a></p>
+                        <div class="info-features">
+                            <h4>What's Inside</h4>
+                            <div class="feature-list">
+                                <div class="feature-item">
+                                    <span class="feature-icon">💻</span>
+                                    <div class="feature-text">
+                                        <strong>Full Linux Terminal</strong>
+                                        <p>Real bash shell with package manager access</p>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-icon">🌐</span>
+                                    <div class="feature-text">
+                                        <strong>Secure Proxy Browser</strong>
+                                        <p>Browse unrestricted with built-in privacy</p>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-icon">📝</span>
+                                    <div class="feature-text">
+                                        <strong>Productivity Apps</strong>
+                                        <p>Text editor, file manager, notes, calculator</p>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-icon">💾</span>
+                                    <div class="feature-text">
+                                        <strong>Full Persistence</strong>
+                                        <p>All your data, files, and settings saved</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-footer">
+                            <div class="version-badge">v1.0.0</div>
+                            <div class="status-indicator">
+                                <span class="status-dot"></span>
+                                <span>All systems operational</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="auth-features">
-                <div class="feature-chip">💻 Linux Terminal</div>
-                <div class="feature-chip">🌐 Secure Browser</div>
-                <div class="feature-chip">📦 App Store</div>
-                <div class="feature-chip">☁️ Cloud Storage</div>
             </div>
         </div>
     </div>

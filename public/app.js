@@ -962,10 +962,6 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         showRegister();
     });
-    document.getElementById('show-register-link').addEventListener('click', (e) => {
-        e.preventDefault();
-        showRegister();
-    });
     document.getElementById('show-login-link').addEventListener('click', (e) => {
         e.preventDefault();
         showLogin();
