@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CloudettteVM - Virtual Linux Machine</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" />
+    <link rel="stylesheet" href="/xterm/css/xterm.css" />
 </head>
 <body>
     <!-- Login/Register Screen - Aurora-style -->
@@ -15,58 +15,111 @@
             <div class="auth-glow auth-glow-2"></div>
         </div>
         <div class="auth-wrapper">
-            <div class="auth-brand">
-                <div class="brand-icon">☁️</div>
-                <h1 class="brand-title">CloudettteVM</h1>
-                <p class="brand-tagline">Your Virtual Linux Desktop in the Cloud</p>
-            </div>
-            
-            <div class="auth-container">
-                <div id="login-form" class="auth-form">
-                    <div class="auth-form-header">
-                        <h2>Welcome Back</h2>
-                        <p>Enter your credentials to continue</p>
+            <div class="auth-content">
+                <!-- Left: Branding and Form -->
+                <div class="auth-left">
+                    <div class="auth-brand">
+                        <div class="brand-icon">☁️</div>
+                        <h1 class="brand-title">CloudettteVM</h1>
+                        <p class="brand-tagline">Your Virtual Linux Desktop in the Cloud</p>
                     </div>
-                    <div class="auth-form-body">
-                        <div class="input-group">
-                            <label for="login-username">Username</label>
-                            <input type="text" id="login-username" placeholder="Enter your username" />
+                    
+                    <div class="auth-container">
+                        <div id="login-form" class="auth-form">
+                            <div class="auth-form-header">
+                                <h2>Welcome Back</h2>
+                                <p>Enter your credentials to continue</p>
+                            </div>
+                            <div class="auth-form-body">
+                                <div class="input-group">
+                                    <label for="login-username">Username</label>
+                                    <input type="text" id="login-username" placeholder="Enter your username" />
+                                </div>
+                                <div class="input-group">
+                                    <label for="login-password">Password</label>
+                                    <input type="password" id="login-password" placeholder="Enter your password" />
+                                </div>
+                                <button id="login-btn" class="auth-btn primary">
+                                    <span>Sign In</span>
+                                    <span class="btn-arrow">→</span>
+                                </button>
+                            </div>
+                            <div class="auth-form-footer">
+                                <button id="show-register-btn" class="auth-btn secondary">
+                                    <span>Create New Account</span>
+                                </button>
+                                <p>Don't have an account? <a href="#" id="show-register-link">Create one</a></p>
+                            </div>
                         </div>
-                        <div class="input-group">
-                            <label for="login-password">Password</label>
-                            <input type="password" id="login-password" placeholder="Enter your password" />
+
+                        <div id="register-form" class="auth-form" style="display: none;">
+                            <div class="auth-form-header">
+                                <h2>Create Account</h2>
+                                <p>Join CloudettteVM today</p>
+                            </div>
+                            <div class="auth-form-body">
+                                <div class="input-group">
+                                    <label for="register-username">Username</label>
+                                    <input type="text" id="register-username" placeholder="Choose a username" />
+                                </div>
+                                <div class="input-group">
+                                    <label for="register-password">Password</label>
+                                    <input type="password" id="register-password" placeholder="Create a password" />
+                                </div>
+                                <button id="register-btn" class="auth-btn primary">
+                                    <span>Create Account</span>
+                                    <span class="btn-arrow">→</span>
+                                </button>
+                            </div>
+                            <div class="auth-form-footer">
+                                <p>Already have an account? <a href="#" id="show-login-link">Sign in</a></p>
+                            </div>
                         </div>
-                        <button id="login-btn" class="auth-btn primary">
-                            <span>Sign In</span>
-                            <span class="btn-arrow">→</span>
-                        </button>
-                    </div>
-                    <div class="auth-form-footer">
-                        <p>Don't have an account? <a href="#" id="show-register-link">Create one</a></p>
                     </div>
                 </div>
 
-                <div id="register-form" class="auth-form" style="display: none;">
-                    <div class="auth-form-header">
-                        <h2>Create Account</h2>
-                        <p>Join CloudettteVM today</p>
-                    </div>
-                    <div class="auth-form-body">
-                        <div class="input-group">
-                            <label for="register-username">Username</label>
-                            <input type="text" id="register-username" placeholder="Choose a username" />
+                <!-- Right: Info Panel -->
+                <div class="auth-right">
+                    <div class="info-card">
+                        <div class="info-header">
+                            <h3>🚀 Features</h3>
                         </div>
-                        <div class="input-group">
-                            <label for="register-password">Password</label>
-                            <input type="password" id="register-password" placeholder="Create a password" />
+                        <div class="info-list">
+                            <div class="info-item">
+                                <div class="info-icon">💻</div>
+                                <div class="info-text">
+                                    <strong>Full Linux Terminal</strong>
+                                    <p>Real bash shell with package manager</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">🌐</div>
+                                <div class="info-text">
+                                    <strong>Secure Browser</strong>
+                                    <p>Unrestricted web access with privacy</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">📝</div>
+                                <div class="info-text">
+                                    <strong>Built-in Apps</strong>
+                                    <p>Text editor, files, notes, calculator</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">💾</div>
+                                <div class="info-text">
+                                    <strong>Full Persistence</strong>
+                                    <p>Your data saved across sessions</p>
+                                </div>
+                            </div>
                         </div>
-                        <button id="register-btn" class="auth-btn primary">
-                            <span>Create Account</span>
-                            <span class="btn-arrow">→</span>
-                        </button>
-                    </div>
-                    <div class="auth-form-footer">
-                        <p>Already have an account? <a href="#" id="show-login-link">Sign in</a></p>
+                        <div class="info-footer">
+                            <div class="status-badge">
+                                <span class="status-dot"></span>
+                                <span>All systems operational</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -93,6 +146,22 @@
                 <div class="desktop-icon" data-app="browser">
                     <div class="icon-img">🌐</div>
                     <span class="icon-label">Browser</span>
+                </div>
+                <div class="desktop-icon" data-app="editor">
+                    <div class="icon-img">📝</div>
+                    <span class="icon-label">Text Editor</span>
+                </div>
+                <div class="desktop-icon" data-app="files">
+                    <div class="icon-img">📁</div>
+                    <span class="icon-label">Files</span>
+                </div>
+                <div class="desktop-icon" data-app="calculator">
+                    <div class="icon-img">🔢</div>
+                    <span class="icon-label">Calculator</span>
+                </div>
+                <div class="desktop-icon" data-app="notes">
+                    <div class="icon-img">📔</div>
+                    <span class="icon-label">Notes</span>
                 </div>
                 <div class="desktop-icon" data-app="store">
                     <div class="icon-img">📦</div>
@@ -316,6 +385,122 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Text Editor Window -->
+                <div class="window" id="editor-window" style="display: none;">
+                    <div class="window-titlebar">
+                        <div class="window-title">
+                            <span class="window-icon">📝</span>
+                            <span>Text Editor</span>
+                        </div>
+                        <div class="window-controls">
+                            <button class="window-btn minimize" data-window="editor">−</button>
+                            <button class="window-btn maximize" data-window="editor">□</button>
+                            <button class="window-btn close" data-window="editor">×</button>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="editor-toolbar">
+                            <input type="text" id="editor-filename" placeholder="untitled.txt" class="editor-filename-input" />
+                            <button id="editor-save-btn" class="editor-btn">💾 Save</button>
+                            <button id="editor-new-btn" class="editor-btn">📄 New</button>
+                            <button id="editor-clear-btn" class="editor-btn">🗑️ Clear</button>
+                        </div>
+                        <textarea id="editor-content" class="editor-textarea" placeholder="Start typing..."></textarea>
+                    </div>
+                </div>
+
+                <!-- File Manager Window -->
+                <div class="window" id="files-window" style="display: none;">
+                    <div class="window-titlebar">
+                        <div class="window-title">
+                            <span class="window-icon">📁</span>
+                            <span>File Manager</span>
+                        </div>
+                        <div class="window-controls">
+                            <button class="window-btn minimize" data-window="files">−</button>
+                            <button class="window-btn maximize" data-window="files">□</button>
+                            <button class="window-btn close" data-window="files">×</button>
+                        </div>
+                    </div>
+                    <div class="window-content window-scrollable">
+                        <div class="files-toolbar">
+                            <button id="files-refresh-btn" class="files-btn">🔄 Refresh</button>
+                            <button id="files-delete-btn" class="files-btn">🗑️ Delete</button>
+                        </div>
+                        <div id="files-list" class="files-list">
+                            <p class="loading">Loading files...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculator Window -->
+                <div class="window" id="calculator-window" style="display: none;">
+                    <div class="window-titlebar">
+                        <div class="window-title">
+                            <span class="window-icon">🔢</span>
+                            <span>Calculator</span>
+                        </div>
+                        <div class="window-controls">
+                            <button class="window-btn minimize" data-window="calculator">−</button>
+                            <button class="window-btn close" data-window="calculator">×</button>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="calculator">
+                            <div class="calculator-display" id="calc-display">0</div>
+                            <div class="calculator-buttons">
+                                <button class="calc-btn calc-clear" data-action="clear">C</button>
+                                <button class="calc-btn calc-operator" data-action="backspace">⌫</button>
+                                <button class="calc-btn calc-operator" data-action="/">÷</button>
+                                <button class="calc-btn calc-operator" data-action="*">×</button>
+                                <button class="calc-btn" data-action="7">7</button>
+                                <button class="calc-btn" data-action="8">8</button>
+                                <button class="calc-btn" data-action="9">9</button>
+                                <button class="calc-btn calc-operator" data-action="-">−</button>
+                                <button class="calc-btn" data-action="4">4</button>
+                                <button class="calc-btn" data-action="5">5</button>
+                                <button class="calc-btn" data-action="6">6</button>
+                                <button class="calc-btn calc-operator" data-action="+">+</button>
+                                <button class="calc-btn" data-action="1">1</button>
+                                <button class="calc-btn" data-action="2">2</button>
+                                <button class="calc-btn" data-action="3">3</button>
+                                <button class="calc-btn calc-equals" data-action="=" style="grid-row: span 2;">=</button>
+                                <button class="calc-btn calc-zero" data-action="0" style="grid-column: span 2;">0</button>
+                                <button class="calc-btn" data-action=".">.</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notes Window -->
+                <div class="window" id="notes-window" style="display: none;">
+                    <div class="window-titlebar">
+                        <div class="window-title">
+                            <span class="window-icon">📔</span>
+                            <span>Notes</span>
+                        </div>
+                        <div class="window-controls">
+                            <button class="window-btn minimize" data-window="notes">−</button>
+                            <button class="window-btn maximize" data-window="notes">□</button>
+                            <button class="window-btn close" data-window="notes">×</button>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="notes-sidebar">
+                            <button id="notes-new-btn" class="notes-btn-new">➕ New Note</button>
+                            <div id="notes-list" class="notes-list"></div>
+                        </div>
+                        <div class="notes-editor">
+                            <input type="text" id="notes-title" placeholder="Note title" class="notes-title-input" />
+                            <textarea id="notes-content" class="notes-textarea" placeholder="Write your note..."></textarea>
+                            <div class="notes-footer">
+                                <button id="notes-save-btn" class="notes-btn">💾 Save</button>
+                                <button id="notes-delete-btn" class="notes-btn notes-btn-danger">🗑️ Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -349,6 +534,23 @@
                     <span class="menu-icon">🌐</span>
                     <span>Browser</span>
                 </div>
+                <div class="start-menu-item" data-app="editor">
+                    <span class="menu-icon">📝</span>
+                    <span>Text Editor</span>
+                </div>
+                <div class="start-menu-item" data-app="files">
+                    <span class="menu-icon">📁</span>
+                    <span>Files</span>
+                </div>
+                <div class="start-menu-item" data-app="calculator">
+                    <span class="menu-icon">🔢</span>
+                    <span>Calculator</span>
+                </div>
+                <div class="start-menu-item" data-app="notes">
+                    <span class="menu-icon">📔</span>
+                    <span>Notes</span>
+                </div>
+                <div class="start-menu-divider"></div>
                 <div class="start-menu-item" data-app="store">
                     <span class="menu-icon">📦</span>
                     <span>App Store</span>
@@ -377,9 +579,9 @@
 
     <div id="toast" class="toast"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.5.4/dist/socket.io.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
+    <script src="/socket.io/socket.io.min.js"></script>
+    <script src="/xterm/lib/xterm.js"></script>
+    <script src="/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
