@@ -169,9 +169,15 @@ function openWindow(appName) {
     focusWindow(appName);
     updateTaskbar();
 
-    // Initialize terminal if opening terminal window
+    // Initialize app-specific functionality
     if (appName === 'terminal' && !terminal) {
         setTimeout(initializeTerminal, 100);
+    } else if (appName === 'files') {
+        setTimeout(loadFilesList, 100);
+    } else if (appName === 'notes') {
+        setTimeout(loadNotes, 100);
+    } else if (appName === 'calculator') {
+        setTimeout(updateCalcDisplay, 100);
     }
 
     // Hide start menu
@@ -843,7 +849,9 @@ async function loadNotes() {
     try {
         const response = await fetch('/api/userdata/notes');
         const data = await response.json();
-        notes = Object.entries(data).map(([id, note]) => ({ id, ...note }));
+        notes = Object.entries(data)
+            .map(([id, note]) => ({ id, ...note }))
+            .filter(note => note.title || note.content); // Filter out deleted notes
         renderNotesList();
     } catch (error) {
         notes = [];
@@ -926,12 +934,18 @@ async function deleteNote() {
     if (!confirm('Delete this note?')) return;
     
     try {
-        // We'll need to implement a delete endpoint, for now just clear and reload
+        // Mark as deleted by saving null value
+        await fetch('/api/userdata', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ dataType: 'notes', dataKey: currentNoteId, dataValue: null })
+        });
+        
         showToast('Note deleted');
         currentNoteId = null;
         document.getElementById('notes-title').value = '';
         document.getElementById('notes-content').value = '';
-        // Note: Actual deletion would require a DELETE endpoint
+        await loadNotes();
     } catch (error) {
         showToast('Failed to delete note', 'error');
     }
@@ -1087,19 +1101,4 @@ document.addEventListener('DOMContentLoaded', () => {
     if (notesNewBtn) notesNewBtn.addEventListener('click', createNewNote);
     if (notesSaveBtn) notesSaveBtn.addEventListener('click', saveNote);
     if (notesDeleteBtn) notesDeleteBtn.addEventListener('click', deleteNote);
-
-    // Load app-specific data when windows open
-    const originalOpenWindow = openWindow;
-    openWindow = function(appName) {
-        originalOpenWindow(appName);
-        
-        // Load data when specific apps are opened
-        if (appName === 'files') {
-            setTimeout(loadFilesList, 100);
-        } else if (appName === 'notes') {
-            setTimeout(loadNotes, 100);
-        } else if (appName === 'calculator') {
-            updateCalcDisplay();
-        }
-    };
 });
