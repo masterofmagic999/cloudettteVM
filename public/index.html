@@ -18,134 +18,293 @@
                 <h2>Login</h2>
                 <input type="text" id="login-username" placeholder="Username" />
                 <input type="password" id="login-password" placeholder="Password" />
-                <button onclick="login()">Login</button>
-                <p class="switch-auth">Don't have an account? <a href="#" onclick="showRegister()">Register</a></p>
+                <button id="login-btn">Login</button>
+                <p class="switch-auth">Don't have an account? <a href="#" id="show-register-link">Register</a></p>
             </div>
 
             <div id="register-form" class="auth-form" style="display: none;">
                 <h2>Register</h2>
                 <input type="text" id="register-username" placeholder="Username" />
                 <input type="password" id="register-password" placeholder="Password" />
-                <button onclick="register()">Register</button>
-                <p class="switch-auth">Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+                <button id="register-btn">Register</button>
+                <p class="switch-auth">Already have an account? <a href="#" id="show-login-link">Login</a></p>
             </div>
         </div>
     </div>
 
-    <!-- Main Application Screen -->
+    <!-- Desktop Environment -->
     <div id="app-screen" class="screen">
-        <div class="header">
-            <div class="logo">CloudettteVM</div>
-            <div class="user-info">
-                <span id="username-display"></span>
-                <button onclick="logout()" class="btn-logout">Logout</button>
+        <!-- Desktop Area -->
+        <div class="desktop">
+            <!-- Desktop Icons -->
+            <div class="desktop-icons">
+                <div class="desktop-icon" data-app="terminal">
+                    <div class="icon-img">💻</div>
+                    <span class="icon-label">Terminal</span>
+                </div>
+                <div class="desktop-icon" data-app="browser">
+                    <div class="icon-img">🌐</div>
+                    <span class="icon-label">Browser</span>
+                </div>
+                <div class="desktop-icon" data-app="store">
+                    <div class="icon-img">📦</div>
+                    <span class="icon-label">App Store</span>
+                </div>
+                <div class="desktop-icon" data-app="apps">
+                    <div class="icon-img">📱</div>
+                    <span class="icon-label">My Apps</span>
+                </div>
+                <div class="desktop-icon" data-app="history">
+                    <div class="icon-img">📜</div>
+                    <span class="icon-label">History</span>
+                </div>
+                <div class="desktop-icon" data-app="settings">
+                    <div class="icon-img">⚙️</div>
+                    <span class="icon-label">Settings</span>
+                </div>
+            </div>
+
+            <!-- Welcome Widget -->
+            <div class="desktop-widget" id="welcome-widget">
+                <div class="widget-header">
+                    <span>👋 Welcome to CloudettteVM</span>
+                    <button class="widget-close" id="close-welcome">×</button>
+                </div>
+                <div class="widget-content">
+                    <p>Your virtual Linux desktop in the cloud. Double-click an icon to open an app, or use the taskbar below.</p>
+                    <div class="widget-features">
+                        <span>💻 Terminal</span>
+                        <span>🌐 Secure Browser</span>
+                        <span>📦 App Store</span>
+                        <span>☁️ Cloud Storage</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Windows Container -->
+            <div class="windows-container" id="windows-container">
+                <!-- Terminal Window -->
+                <div class="window" id="terminal-window" style="display: none;">
+                    <div class="window-titlebar">
+                        <div class="window-title">
+                            <span class="window-icon">💻</span>
+                            <span>Terminal</span>
+                        </div>
+                        <div class="window-controls">
+                            <button class="window-btn minimize" data-window="terminal">−</button>
+                            <button class="window-btn maximize" data-window="terminal">□</button>
+                            <button class="window-btn close" data-window="terminal">×</button>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div id="terminal" class="terminal-container"></div>
+                    </div>
+                </div>
+
+                <!-- Browser Window -->
+                <div class="window" id="browser-window" style="display: none;">
+                    <div class="window-titlebar">
+                        <div class="window-title">
+                            <span class="window-icon">🌐</span>
+                            <span>Secure Browser</span>
+                        </div>
+                        <div class="window-controls">
+                            <button class="window-btn minimize" data-window="browser">−</button>
+                            <button class="window-btn maximize" data-window="browser">□</button>
+                            <button class="window-btn close" data-window="browser">×</button>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="browser-controls">
+                            <input type="text" id="url-input" placeholder="Enter URL (e.g., https://example.com)" />
+                            <button id="go-btn">Go</button>
+                            <button id="refresh-btn">↻</button>
+                        </div>
+                        <iframe id="browser-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+                    </div>
+                </div>
+
+                <!-- App Store Window -->
+                <div class="window" id="store-window" style="display: none;">
+                    <div class="window-titlebar">
+                        <div class="window-title">
+                            <span class="window-icon">📦</span>
+                            <span>App Store</span>
+                        </div>
+                        <div class="window-controls">
+                            <button class="window-btn minimize" data-window="store">−</button>
+                            <button class="window-btn maximize" data-window="store">□</button>
+                            <button class="window-btn close" data-window="store">×</button>
+                        </div>
+                    </div>
+                    <div class="window-content window-scrollable">
+                        <div class="app-grid">
+                            <div class="app-card">
+                                <div class="app-icon">📗</div>
+                                <h3>Node.js</h3>
+                                <p>JavaScript runtime environment</p>
+                                <button class="install-btn" data-app="nodejs" data-version="latest">Install</button>
+                            </div>
+                            <div class="app-card">
+                                <div class="app-icon">🐍</div>
+                                <h3>Python</h3>
+                                <p>Python programming language</p>
+                                <button class="install-btn" data-app="python3" data-version="latest">Install</button>
+                            </div>
+                            <div class="app-card">
+                                <div class="app-icon">📂</div>
+                                <h3>Git</h3>
+                                <p>Version control system</p>
+                                <button class="install-btn" data-app="git" data-version="latest">Install</button>
+                            </div>
+                            <div class="app-card">
+                                <div class="app-icon">📝</div>
+                                <h3>Vim</h3>
+                                <p>Text editor</p>
+                                <button class="install-btn" data-app="vim" data-version="latest">Install</button>
+                            </div>
+                            <div class="app-card">
+                                <div class="app-icon">🔗</div>
+                                <h3>Curl</h3>
+                                <p>Command-line HTTP client</p>
+                                <button class="install-btn" data-app="curl" data-version="latest">Install</button>
+                            </div>
+                            <div class="app-card">
+                                <div class="app-icon">⬇️</div>
+                                <h3>Wget</h3>
+                                <p>Network downloader</p>
+                                <button class="install-btn" data-app="wget" data-version="latest">Install</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- My Apps Window -->
+                <div class="window" id="apps-window" style="display: none;">
+                    <div class="window-titlebar">
+                        <div class="window-title">
+                            <span class="window-icon">📱</span>
+                            <span>My Apps</span>
+                        </div>
+                        <div class="window-controls">
+                            <button class="window-btn minimize" data-window="apps">−</button>
+                            <button class="window-btn maximize" data-window="apps">□</button>
+                            <button class="window-btn close" data-window="apps">×</button>
+                        </div>
+                    </div>
+                    <div class="window-content window-scrollable">
+                        <div id="installed-apps-list" class="apps-list">
+                            <p class="loading">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Window -->
+                <div class="window" id="history-window" style="display: none;">
+                    <div class="window-titlebar">
+                        <div class="window-title">
+                            <span class="window-icon">📜</span>
+                            <span>Browser History</span>
+                        </div>
+                        <div class="window-controls">
+                            <button class="window-btn minimize" data-window="history">−</button>
+                            <button class="window-btn maximize" data-window="history">□</button>
+                            <button class="window-btn close" data-window="history">×</button>
+                        </div>
+                    </div>
+                    <div class="window-content window-scrollable">
+                        <div id="history-list" class="history-list">
+                            <p class="loading">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Window -->
+                <div class="window" id="settings-window" style="display: none;">
+                    <div class="window-titlebar">
+                        <div class="window-title">
+                            <span class="window-icon">⚙️</span>
+                            <span>Settings</span>
+                        </div>
+                        <div class="window-controls">
+                            <button class="window-btn minimize" data-window="settings">−</button>
+                            <button class="window-btn maximize" data-window="settings">□</button>
+                            <button class="window-btn close" data-window="settings">×</button>
+                        </div>
+                    </div>
+                    <div class="window-content window-scrollable">
+                        <div class="settings-content">
+                            <div class="settings-section">
+                                <h3>👤 Account</h3>
+                                <div class="settings-item">
+                                    <span>Username:</span>
+                                    <span id="settings-username"></span>
+                                </div>
+                                <button id="logout-btn" class="settings-btn danger">Logout</button>
+                            </div>
+                            <div class="settings-section">
+                                <h3>ℹ️ About</h3>
+                                <p>CloudettteVM v1.0.0</p>
+                                <p>A virtual Linux machine in the cloud with secure browsing and persistent storage.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="main-container">
-            <div class="sidebar">
-                <button class="nav-btn active" onclick="showTab('terminal', event)">
-                    <span class="icon">💻</span> Terminal
-                </button>
-                <button class="nav-btn" onclick="showTab('browser', event)">
-                    <span class="icon">🌐</span> Browser
-                </button>
-                <button class="nav-btn" onclick="showTab('store', event)">
-                    <span class="icon">📦</span> App Store
-                </button>
-                <button class="nav-btn" onclick="showTab('apps', event)">
-                    <span class="icon">📱</span> My Apps
-                </button>
-                <button class="nav-btn" onclick="showTab('history', event)">
-                    <span class="icon">📜</span> History
+        <!-- Taskbar -->
+        <div class="taskbar">
+            <div class="taskbar-start">
+                <button class="start-btn" id="start-btn">
+                    <span class="start-icon">☁️</span>
                 </button>
             </div>
+            <div class="taskbar-apps" id="taskbar-apps">
+                <!-- Active window buttons will be added here dynamically -->
+            </div>
+            <div class="taskbar-tray">
+                <span id="username-display" class="tray-user"></span>
+                <span class="tray-clock" id="tray-clock"></span>
+            </div>
+        </div>
 
-            <div class="content">
-                <!-- Terminal Tab -->
-                <div id="terminal-tab" class="tab active">
-                    <div class="tab-header">
-                        <h2>Terminal</h2>
-                        <p>Full Linux terminal access - install apps via apt, npm, pip, etc.</p>
-                    </div>
-                    <div id="terminal" class="terminal-container"></div>
+        <!-- Start Menu -->
+        <div class="start-menu" id="start-menu" style="display: none;">
+            <div class="start-menu-header">
+                <span class="start-menu-title">☁️ CloudettteVM</span>
+            </div>
+            <div class="start-menu-apps">
+                <div class="start-menu-item" data-app="terminal">
+                    <span class="menu-icon">💻</span>
+                    <span>Terminal</span>
                 </div>
-
-                <!-- Browser Tab -->
-                <div id="browser-tab" class="tab">
-                    <div class="tab-header">
-                        <h2>Secure Browser</h2>
-                        <p>Browse the web through our high-speed, secure proxy that bypasses restrictions</p>
-                    </div>
-                    <div class="browser-controls">
-                        <input type="text" id="url-input" placeholder="Enter URL (e.g., https://example.com)" />
-                        <button onclick="navigateTo()">Go</button>
-                        <button onclick="refreshBrowser()">Refresh</button>
-                    </div>
-                    <iframe id="browser-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+                <div class="start-menu-item" data-app="browser">
+                    <span class="menu-icon">🌐</span>
+                    <span>Browser</span>
                 </div>
-
-                <!-- App Store Tab -->
-                <div id="store-tab" class="tab">
-                    <div class="tab-header">
-                        <h2>App Store</h2>
-                        <p>Install popular applications with one click</p>
-                    </div>
-                    <div class="app-grid">
-                        <div class="app-card">
-                            <h3>Node.js</h3>
-                            <p>JavaScript runtime environment</p>
-                            <button onclick="installApp('nodejs', 'latest')">Install</button>
-                        </div>
-                        <div class="app-card">
-                            <h3>Python</h3>
-                            <p>Python programming language</p>
-                            <button onclick="installApp('python3', 'latest')">Install</button>
-                        </div>
-                        <div class="app-card">
-                            <h3>Git</h3>
-                            <p>Version control system</p>
-                            <button onclick="installApp('git', 'latest')">Install</button>
-                        </div>
-                        <div class="app-card">
-                            <h3>Vim</h3>
-                            <p>Text editor</p>
-                            <button onclick="installApp('vim', 'latest')">Install</button>
-                        </div>
-                        <div class="app-card">
-                            <h3>Curl</h3>
-                            <p>Command-line HTTP client</p>
-                            <button onclick="installApp('curl', 'latest')">Install</button>
-                        </div>
-                        <div class="app-card">
-                            <h3>Wget</h3>
-                            <p>Network downloader</p>
-                            <button onclick="installApp('wget', 'latest')">Install</button>
-                        </div>
-                    </div>
+                <div class="start-menu-item" data-app="store">
+                    <span class="menu-icon">📦</span>
+                    <span>App Store</span>
                 </div>
-
-                <!-- My Apps Tab -->
-                <div id="apps-tab" class="tab">
-                    <div class="tab-header">
-                        <h2>My Installed Apps</h2>
-                        <p>Applications installed on your virtual machine</p>
-                    </div>
-                    <div id="installed-apps-list" class="apps-list">
-                        <p class="loading">Loading...</p>
-                    </div>
+                <div class="start-menu-item" data-app="apps">
+                    <span class="menu-icon">📱</span>
+                    <span>My Apps</span>
                 </div>
-
-                <!-- History Tab -->
-                <div id="history-tab" class="tab">
-                    <div class="tab-header">
-                        <h2>Browser History</h2>
-                        <p>Your browsing history (persisted across sessions)</p>
-                    </div>
-                    <div id="history-list" class="history-list">
-                        <p class="loading">Loading...</p>
-                    </div>
+                <div class="start-menu-item" data-app="history">
+                    <span class="menu-icon">📜</span>
+                    <span>History</span>
                 </div>
+                <div class="start-menu-divider"></div>
+                <div class="start-menu-item" data-app="settings">
+                    <span class="menu-icon">⚙️</span>
+                    <span>Settings</span>
+                </div>
+            </div>
+            <div class="start-menu-footer">
+                <button id="start-logout-btn" class="start-logout">
+                    <span>🚪</span> Logout
+                </button>
             </div>
         </div>
     </div>
