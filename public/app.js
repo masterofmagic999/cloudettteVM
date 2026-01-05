@@ -52,6 +52,16 @@ async function register() {
         return;
     }
 
+    if (username.length < 3 || username.length > 30) {
+        showToast('Username must be between 3 and 30 characters', 'error');
+        return;
+    }
+
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+        showToast('Username can only contain letters, numbers, and underscores', 'error');
+        return;
+    }
+
     if (password.length < 6) {
         showToast('Password must be at least 6 characters', 'error');
         return;

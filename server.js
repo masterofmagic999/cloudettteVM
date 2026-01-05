@@ -11,6 +11,7 @@ const proxy = require('express-http-proxy');
 const helmet = require('helmet');
 const path = require('path');
 const os = require('os');
+const crypto = require('crypto');
 
 const app = express();
 const server = http.createServer(app);
@@ -66,17 +67,27 @@ app.use(helmet({
 }));
 app.use(cors({
   credentials: true,
-  origin: true
+  origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:3000']
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Session configuration
+const sessionSecret = process.env.SESSION_SECRET || (() => {
+  console.warn('⚠️  WARNING: Using fallback session secret. Set SESSION_SECRET environment variable in production!');
+  return crypto.randomBytes(32).toString('hex');
+})();
+
 const sessionMiddleware = session({
-  secret: process.env.SESSION_SECRET || 'cloudette-vm-secret-key-change-in-production',
+  secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 } // 24 hours
+  cookie: { 
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'strict',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
 });
 
 app.use(sessionMiddleware);
@@ -95,8 +106,23 @@ function requireAuth(req, res, next) {
 app.post('/api/register', async (req, res) => {
   try {
     const { username, password } = req.body;
+    
+    // Input validation
     if (!username || !password) {
       return res.status(400).json({ error: 'Username and password required' });
+    }
+    
+    if (username.length < 3 || username.length > 30) {
+      return res.status(400).json({ error: 'Username must be between 3 and 30 characters' });
+    }
+    
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    }
+    
+    // Sanitize username (alphanumeric and underscore only)
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      return res.status(400).json({ error: 'Username can only contain letters, numbers, and underscores' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -210,7 +236,12 @@ app.get('/api/userdata/:dataType', requireAuth, (req, res) => {
     const data = stmt.all(req.session.userId, req.params.dataType);
     const result = {};
     data.forEach(item => {
-      result[item.data_key] = JSON.parse(item.data_value);
+      try {
+        result[item.data_key] = JSON.parse(item.data_value);
+      } catch (parseError) {
+        console.error('Failed to parse user data:', parseError);
+        result[item.data_key] = null;
+      }
     });
     res.json(result);
   } catch (error) {
