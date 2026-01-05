@@ -6,7 +6,9 @@ A robust web application hosting a fully functional virtual Linux machine. Users
 
 > **🚀 Quick Start:** Click the badge above to launch CloudettteVM in GitHub Codespaces instantly!
 > 
-> **📖 Setup Guide:** See [SETUP.md](./SETUP.md) for detailed installation and usage instructions.
+> **📖 Documentation:**
+> - [Setup Guide](./SETUP.md) - Detailed installation and configuration
+> - [Quick Reference](./QUICKREF.md) - Common commands and troubleshooting
 
 ## Features
 
@@ -242,25 +244,59 @@ nano myfile.txt
 ## Configuration
 
 ### Environment Variables
+
+CloudettteVM supports configuration through environment variables. See [.env.example](.env.example) for all available options.
+
+**Essential for Production:**
 ```bash
-PORT=3000                    # Server port
-SESSION_SECRET=<secret>      # Session secret key
-NODE_ENV=production          # Environment mode
+# Copy the example file
+cp .env.example .env
+
+# Edit .env and set at minimum:
+SESSION_SECRET=<random-secret>    # Required for security
+NODE_ENV=production               # Sets production mode
 ```
+
+**All Configuration Options:**
+```bash
+PORT=3000                    # Server port (default: 3000)
+HOST=0.0.0.0                # Server host (default: 0.0.0.0)
+SESSION_SECRET=<secret>      # Session secret key (REQUIRED in production)
+NODE_ENV=production          # Environment mode (development/production)
+ALLOWED_ORIGINS=<origins>    # Comma-separated CORS origins
+```
+
+See [SETUP.md](./SETUP.md) for detailed configuration instructions.
 
 ## Development
 
 ### Project Structure
 ```
 cloudettteVM/
-├── server.js              # Main server file
-├── package.json           # Dependencies and scripts
-├── .gitignore            # Git ignore rules
-├── cloudette.db          # SQLite database (auto-created)
-└── public/               # Frontend files
-    ├── index.html        # Main HTML
-    ├── app.js           # Client JavaScript
-    └── styles.css       # Styling
+├── .devcontainer/         # GitHub Codespaces configuration
+│   └── devcontainer.json # Container setup with Node 20
+├── public/               # Frontend files
+│   ├── index.html        # Main HTML
+│   ├── app.js           # Client JavaScript
+│   └── styles.css       # Styling
+├── server.js            # Main server file
+├── package.json         # Dependencies and scripts
+├── .env.example         # Environment variables template
+├── .gitignore          # Git ignore rules
+├── start.sh            # Quick start script
+├── SETUP.md            # Detailed setup guide
+├── QUICKREF.md         # Quick reference commands
+├── README.md           # This file
+└── cloudette.db        # SQLite database (auto-created)
+```
+
+### Available npm Scripts
+
+```bash
+npm start              # Start the server
+npm run dev            # Start in development mode
+npm run clean          # Remove node_modules, database, and lock file
+npm run reinstall      # Clean and reinstall all dependencies
 ```
 
 ### Adding New Features
