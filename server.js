@@ -5,7 +5,6 @@ const pty = require('node-pty');
 const session = require('express-session');
 const Database = require('better-sqlite3');
 const bcrypt = require('bcrypt');
-const { v4: uuidv4 } = require('uuid');
 const cors = require('cors');
 const proxy = require('express-http-proxy');
 const helmet = require('helmet');
@@ -156,7 +155,7 @@ app.post('/api/register', authLimiter, async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const userId = uuidv4();
+    const userId = crypto.randomUUID();
 
     const stmt = db.prepare('INSERT INTO users (id, username, password) VALUES (?, ?, ?)');
     stmt.run(userId, username, hashedPassword);
@@ -331,7 +330,7 @@ io.on('connection', (socket) => {
       env: process.env
     });
 
-    const terminalId = uuidv4();
+    const terminalId = crypto.randomUUID();
     terminals[terminalId] = term;
     logs[terminalId] = '';
 
