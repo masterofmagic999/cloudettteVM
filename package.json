@@ -1,0 +1,38 @@
+{
+  "name": "cloudetttevm",
+  "version": "1.0.0",
+  "description": "A virtual Linux machine designed to emulate a Linux environment on the web, in addition to adding in a powerful unblocked browser + applications.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "virtual-machine",
+    "linux",
+    "terminal",
+    "proxy",
+    "browser",
+    "codespaces",
+    "web-application"
+  ],
+  "author": "CloudettteVM Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/masterofmagic999/cloudettteVM.git"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^12.5.0",
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "express-http-proxy": "^2.1.2",
+    "express-session": "^1.18.2",
+    "helmet": "^8.1.0",
+    "node-pty": "^1.1.0",
+    "socket.io": "^4.8.3",
+    "uuid": "^13.0.0"
+  }
+}
