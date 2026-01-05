@@ -876,7 +876,7 @@ body {
     align-items: center;
     justify-content: center;
     background: transparent;
-    border: none;
+    border: 1px solid transparent;
     border-radius: var(--radius-sm);
     color: var(--text-secondary);
     cursor: pointer;
@@ -887,6 +887,7 @@ body {
 .browser-nav-btn:hover {
     background: var(--bg-tertiary);
     color: var(--text-primary);
+    border-color: var(--border);
 }
 
 .browser-url-bar {

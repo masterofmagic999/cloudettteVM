@@ -362,8 +362,24 @@ function initializeTerminal() {
         showToast(error, 'error');
     });
 
+    // Track command input for history
+    let currentCommand = '';
     terminal.onData((data) => {
         socket.emit('terminal-input', data);
+        
+        // Track command for history (Enter key = command submitted)
+        if (data === '\r' || data === '\n') {
+            if (currentCommand.trim()) {
+                saveTerminalCommand(currentCommand.trim());
+            }
+            currentCommand = '';
+        } else if (data === '\x7f' || data === '\b') {
+            // Backspace
+            currentCommand = currentCommand.slice(0, -1);
+        } else if (data.length === 1 && data.charCodeAt(0) >= 32) {
+            // Printable character
+            currentCommand += data;
+        }
     });
 
     // Handle window resize
@@ -380,6 +396,19 @@ function initializeTerminal() {
     });
 
     resizeObserver.observe(terminalElement);
+}
+
+// Save terminal command to history
+async function saveTerminalCommand(command) {
+    try {
+        await fetch('/api/terminal/command', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ command })
+        });
+    } catch (error) {
+        console.error('Failed to save terminal command:', error);
+    }
 }
 
 // Browser functions
