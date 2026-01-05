@@ -8,57 +8,77 @@
     <link rel="stylesheet" href="/xterm/css/xterm.css" />
 </head>
 <body>
-    <!-- Login/Register Screen - Sleek Minimal -->
+    <!-- Login/Register Screen - Aurora-style -->
     <div id="auth-screen" class="screen active">
-        <div class="stars"></div>
-        <div class="stars2"></div>
-        <div class="stars3"></div>
+        <div class="auth-background">
+            <div class="auth-glow auth-glow-1"></div>
+            <div class="auth-glow auth-glow-2"></div>
+        </div>
         <div class="auth-wrapper">
-            <div class="auth-card">
-                <div class="auth-brand">
-                    <div class="brand-icon">☁️</div>
-                    <h1 class="brand-title">CloudettteVM</h1>
-                    <p class="brand-tagline">Your Virtual Linux Desktop in the Cloud</p>
-                </div>
-                
+            <div class="auth-brand">
+                <div class="brand-icon">☁️</div>
+                <h1 class="brand-title">CloudettteVM</h1>
+                <p class="brand-tagline">Your Virtual Linux Desktop in the Cloud</p>
+            </div>
+            
+            <div class="auth-container">
                 <div id="login-form" class="auth-form">
-                    <div class="input-group">
-                        <input type="text" id="login-username" placeholder="Username" required />
+                    <div class="auth-form-header">
+                        <h2>Welcome Back</h2>
+                        <p>Enter your credentials to continue</p>
                     </div>
-                    <div class="input-group">
-                        <input type="password" id="login-password" placeholder="Password" required />
+                    <div class="auth-form-body">
+                        <div class="input-group">
+                            <label for="login-username">Username</label>
+                            <input type="text" id="login-username" placeholder="Enter your username" />
+                        </div>
+                        <div class="input-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" placeholder="Enter your password" />
+                        </div>
+                        <button id="login-btn" class="auth-btn primary">
+                            <span>Sign In</span>
+                            <span class="btn-arrow">→</span>
+                        </button>
                     </div>
-                    <button id="login-btn" class="auth-btn">
-                        <span>Sign In</span>
-                        <span class="btn-arrow">→</span>
-                    </button>
-                    <button id="show-register-btn" class="auth-link">
-                        Create an account
-                    </button>
+                    <div class="auth-form-footer">
+                        <button id="show-register-btn" class="auth-btn secondary">
+                            <span>Create New Account</span>
+                        </button>
+                        <p>Don't have an account? <a href="#" id="show-register-link">Create one</a></p>
+                    </div>
                 </div>
 
                 <div id="register-form" class="auth-form" style="display: none;">
-                    <div class="input-group">
-                        <input type="text" id="register-username" placeholder="Username" required />
+                    <div class="auth-form-header">
+                        <h2>Create Account</h2>
+                        <p>Join CloudettteVM today</p>
                     </div>
-                    <div class="input-group">
-                        <input type="password" id="register-password" placeholder="Password" required />
+                    <div class="auth-form-body">
+                        <div class="input-group">
+                            <label for="register-username">Username</label>
+                            <input type="text" id="register-username" placeholder="Choose a username" />
+                        </div>
+                        <div class="input-group">
+                            <label for="register-password">Password</label>
+                            <input type="password" id="register-password" placeholder="Create a password" />
+                        </div>
+                        <button id="register-btn" class="auth-btn primary">
+                            <span>Create Account</span>
+                            <span class="btn-arrow">→</span>
+                        </button>
                     </div>
-                    <button id="register-btn" class="auth-btn">
-                        <span>Create Account</span>
-                        <span class="btn-arrow">→</span>
-                    </button>
-                    <button id="show-login-link" class="auth-link">
-                        Sign in
-                    </button>
+                    <div class="auth-form-footer">
+                        <p>Already have an account? <a href="#" id="show-login-link">Sign in</a></p>
+                    </div>
                 </div>
+            </div>
 
-                <div class="auth-features">
-                    <span>💻 Terminal</span>
-                    <span>🌐 Browser</span>
-                    <span>📦 Apps</span>
-                    <span>☁️ Storage</span>
-                </div>
+            <div class="auth-features">
+                <div class="feature-chip">💻 Linux Terminal</div>
+                <div class="feature-chip">🌐 Secure Browser</div>
+                <div class="feature-chip">📦 App Store</div>
+                <div class="feature-chip">☁️ Cloud Storage</div>
             </div>
         </div>
     </div>
