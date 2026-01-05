@@ -23,6 +23,10 @@
     "url": "https://github.com/masterofmagic999/cloudettteVM.git"
   },
   "license": "ISC",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
     "bcrypt": "^6.0.0",

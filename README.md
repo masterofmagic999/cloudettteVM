@@ -5,6 +5,8 @@
 A robust web application hosting a fully functional virtual Linux machine. Users can install apps via terminal or store, with an advanced profile system that persists all data, including installed software and browser history.
 
 > **🚀 Quick Start:** Click the badge above to launch CloudettteVM in GitHub Codespaces instantly!
+> 
+> **📖 Setup Guide:** See [SETUP.md](./SETUP.md) for detailed installation and usage instructions.
 
 ## Features
 
@@ -42,9 +44,11 @@ A robust web application hosting a fully functional virtual Linux machine. Users
 
 ## Installation
 
+> **📖 For detailed setup instructions, see [SETUP.md](./SETUP.md)**
+
 ### Prerequisites
-- Node.js (v14 or higher)
-- npm or yarn
+- Node.js (v20 or higher) - **REQUIRED**
+- npm (v10 or higher)
 - Linux/MacOS (recommended) or Windows with WSL
 
 ### Setup
@@ -73,6 +77,8 @@ http://localhost:3000
 ## 🚀 GitHub Codespaces Setup (Recommended)
 
 CloudettteVM is optimized for GitHub Codespaces! Run it instantly in your browser without any local setup.
+
+> **✅ Automatic Setup:** The devcontainer configuration automatically installs Node.js 20 and all dependencies.
 
 ### Quick Start in Codespaces
 
@@ -106,7 +112,7 @@ CloudettteVM is optimized for GitHub Codespaces! Run it instantly in your browse
 ### Codespaces Configuration
 
 The repository includes a `.devcontainer/devcontainer.json` configuration that:
-- Sets up Node.js 18 environment
+- Sets up Node.js 20 environment (required for dependencies)
 - Installs required VS Code extensions
 - Automatically forwards port 3000
 - Runs `npm install` on creation
