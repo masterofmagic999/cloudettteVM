@@ -37,6 +37,7 @@ db.exec(`
     data_type TEXT NOT NULL,
     data_key TEXT NOT NULL,
     data_value TEXT,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
     UNIQUE(user_id, data_type, data_key)
   );
@@ -55,9 +56,40 @@ db.exec(`
     user_id TEXT NOT NULL,
     app_name TEXT NOT NULL,
     app_version TEXT,
+    install_source TEXT DEFAULT 'store',
     installed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
     UNIQUE(user_id, app_name)
+  );
+
+  CREATE TABLE IF NOT EXISTS terminal_commands (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL,
+    command TEXT NOT NULL,
+    executed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+  );
+
+  CREATE TABLE IF NOT EXISTS user_preferences (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL,
+    pref_key TEXT NOT NULL,
+    pref_value TEXT,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    UNIQUE(user_id, pref_key)
+  );
+
+  CREATE TABLE IF NOT EXISTS user_files (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL,
+    file_path TEXT NOT NULL,
+    file_content TEXT,
+    file_type TEXT DEFAULT 'text',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    UNIQUE(user_id, file_path)
   );
 `);
 
@@ -275,6 +307,101 @@ app.get('/api/userdata/:dataType', apiLimiter, requireAuth, (req, res) => {
     res.json(result);
   } catch (error) {
     res.status(500).json({ error: 'Failed to retrieve user data' });
+  }
+});
+
+// Terminal commands history
+app.post('/api/terminal/command', apiLimiter, requireAuth, (req, res) => {
+  try {
+    const { command } = req.body;
+    if (!command || command.trim().length === 0) {
+      return res.status(400).json({ error: 'Command required' });
+    }
+    const stmt = db.prepare('INSERT INTO terminal_commands (user_id, command) VALUES (?, ?)');
+    stmt.run(req.session.userId, command.trim());
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to save command' });
+  }
+});
+
+app.get('/api/terminal/commands', apiLimiter, requireAuth, (req, res) => {
+  try {
+    const stmt = db.prepare('SELECT * FROM terminal_commands WHERE user_id = ? ORDER BY executed_at DESC LIMIT 100');
+    const commands = stmt.all(req.session.userId);
+    res.json(commands);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve commands' });
+  }
+});
+
+// User preferences
+app.post('/api/preferences', apiLimiter, requireAuth, (req, res) => {
+  try {
+    const { key, value } = req.body;
+    const stmt = db.prepare('INSERT OR REPLACE INTO user_preferences (user_id, pref_key, pref_value, updated_at) VALUES (?, ?, ?, datetime("now"))');
+    stmt.run(req.session.userId, key, JSON.stringify(value));
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to save preference' });
+  }
+});
+
+app.get('/api/preferences', apiLimiter, requireAuth, (req, res) => {
+  try {
+    const stmt = db.prepare('SELECT * FROM user_preferences WHERE user_id = ?');
+    const prefs = stmt.all(req.session.userId);
+    const result = {};
+    prefs.forEach(pref => {
+      try {
+        result[pref.pref_key] = JSON.parse(pref.pref_value);
+      } catch (e) {
+        result[pref.pref_key] = pref.pref_value;
+      }
+    });
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve preferences' });
+  }
+});
+
+// User files persistence
+app.post('/api/files', apiLimiter, requireAuth, (req, res) => {
+  try {
+    const { path: filePath, content, type } = req.body;
+    const stmt = db.prepare('INSERT OR REPLACE INTO user_files (user_id, file_path, file_content, file_type, updated_at) VALUES (?, ?, ?, ?, datetime("now"))');
+    stmt.run(req.session.userId, filePath, content, type || 'text');
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to save file' });
+  }
+});
+
+app.get('/api/files', apiLimiter, requireAuth, (req, res) => {
+  try {
+    const filePath = req.query.path;
+    if (filePath) {
+      const stmt = db.prepare('SELECT * FROM user_files WHERE user_id = ? AND file_path = ?');
+      const file = stmt.get(req.session.userId, filePath);
+      res.json(file || null);
+    } else {
+      const stmt = db.prepare('SELECT file_path, file_type, created_at, updated_at FROM user_files WHERE user_id = ? ORDER BY updated_at DESC');
+      const files = stmt.all(req.session.userId);
+      res.json(files);
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve files' });
+  }
+});
+
+app.delete('/api/files', apiLimiter, requireAuth, (req, res) => {
+  try {
+    const { path: filePath } = req.body;
+    const stmt = db.prepare('DELETE FROM user_files WHERE user_id = ? AND file_path = ?');
+    stmt.run(req.session.userId, filePath);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete file' });
   }
 });
 

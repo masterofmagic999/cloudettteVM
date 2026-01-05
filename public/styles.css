@@ -863,36 +863,30 @@ body {
 .browser-toolbar {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    background: var(--bg-tertiary);
-    border-bottom: 1px solid var(--border);
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-light);
 }
 
-.browser-controls {
-    display: flex;
-    gap: 4px;
-}
-
-.nav-btn {
-    width: 32px;
-    height: 32px;
+.browser-nav-btn {
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: transparent;
-    border: 1px solid var(--border);
+    border: none;
     border-radius: var(--radius-sm);
     color: var(--text-secondary);
     cursor: pointer;
-    font-size: 14px;
+    font-size: 18px;
     transition: all 0.15s;
 }
 
-.nav-btn:hover {
-    background: var(--bg-elevated);
+.browser-nav-btn:hover {
+    background: var(--bg-tertiary);
     color: var(--text-primary);
-    border-color: var(--accent);
 }
 
 .browser-url-bar {
@@ -900,15 +894,21 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 14px;
+    padding: 6px 12px;
     background: var(--bg-primary);
     border: 1px solid var(--border);
-    border-radius: var(--radius-md);
+    border-radius: 20px;
+    transition: all 0.2s;
 }
 
-.url-icon {
-    font-size: 14px;
-    opacity: 0.7;
+.browser-url-bar:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+}
+
+.url-secure-icon {
+    font-size: 12px;
+    opacity: 0.6;
 }
 
 .browser-url-bar input {
@@ -925,63 +925,24 @@ body {
     color: var(--text-muted);
 }
 
-.go-btn {
-    padding: 8px 16px;
+.url-go-btn {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: var(--accent);
     color: white;
     border: none;
-    border-radius: var(--radius-md);
+    border-radius: 50%;
     cursor: pointer;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 12px;
     transition: all 0.15s;
 }
 
-.go-btn:hover {
+.url-go-btn:hover {
     background: var(--accent-dark);
-}
-
-.proxy-selector select {
-    padding: 8px 12px;
-    background: var(--bg-primary);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    color: var(--text-secondary);
-    font-size: 12px;
-    cursor: pointer;
-    outline: none;
-}
-
-.proxy-selector select:hover {
-    border-color: var(--accent);
-}
-
-.browser-info-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px 12px;
-    background: rgba(99, 102, 241, 0.1);
-    border-bottom: 1px solid var(--border);
-    font-size: 11px;
-}
-
-.proxy-badge {
-    color: var(--accent-light);
-    font-weight: 500;
-}
-
-.proxy-info {
-    color: var(--text-muted);
-}
-
-.proxy-info a {
-    color: var(--accent-light);
-    text-decoration: none;
-}
-
-.proxy-info a:hover {
-    text-decoration: underline;
+    transform: scale(1.05);
 }
 
 #browser-frame {
@@ -989,6 +950,73 @@ body {
     width: 100%;
     border: none;
     background: white;
+}
+
+/* ==================== ACTIVITY ==================== */
+.activity-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 12px;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border);
+}
+
+.activity-tab {
+    padding: 8px 16px;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.activity-tab:hover {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+}
+
+.activity-tab.active {
+    background: var(--accent);
+    color: white;
+}
+
+.activity-content {
+    padding: 16px;
+}
+
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.activity-item {
+    padding: 12px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+}
+
+.activity-item h4 {
+    font-size: 14px;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.activity-item p {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.activity-item a {
+    color: var(--accent-light);
+    text-decoration: none;
+}
+
+.activity-item a:hover {
+    text-decoration: underline;
 }
 
 /* ==================== APP STORE ==================== */

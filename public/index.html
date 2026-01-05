@@ -102,9 +102,9 @@
                     <div class="icon-img">📱</div>
                     <span class="icon-label">My Apps</span>
                 </div>
-                <div class="desktop-icon" data-app="history">
-                    <div class="icon-img">📜</div>
-                    <span class="icon-label">History</span>
+                <div class="desktop-icon" data-app="activity">
+                    <div class="icon-img">📊</div>
+                    <span class="icon-label">Activity</span>
                 </div>
                 <div class="desktop-icon" data-app="settings">
                     <div class="icon-img">⚙️</div>
@@ -154,7 +154,7 @@
                     <div class="window-titlebar">
                         <div class="window-title">
                             <span class="window-icon">🌐</span>
-                            <span>Secure Browser</span>
+                            <span>Web Browser</span>
                         </div>
                         <div class="window-controls">
                             <button class="window-btn minimize" data-window="browser">−</button>
@@ -164,26 +164,14 @@
                     </div>
                     <div class="window-content">
                         <div class="browser-toolbar">
-                            <div class="browser-controls">
-                                <button id="back-btn" class="nav-btn" title="Back">←</button>
-                                <button id="forward-btn" class="nav-btn" title="Forward">→</button>
-                                <button id="refresh-btn" class="nav-btn" title="Refresh">↻</button>
-                            </div>
+                            <button id="back-btn" class="browser-nav-btn" title="Back">‹</button>
+                            <button id="forward-btn" class="browser-nav-btn" title="Forward">›</button>
+                            <button id="refresh-btn" class="browser-nav-btn" title="Refresh">⟳</button>
                             <div class="browser-url-bar">
-                                <span class="url-icon">🔒</span>
-                                <input type="text" id="url-input" placeholder="Enter URL (e.g., https://example.com)" />
+                                <span class="url-secure-icon">🔒</span>
+                                <input type="text" id="url-input" placeholder="Search or enter URL" />
+                                <button id="go-btn" class="url-go-btn">→</button>
                             </div>
-                            <button id="go-btn" class="go-btn">Go</button>
-                            <div class="proxy-selector">
-                                <select id="proxy-type" title="Proxy Type">
-                                    <option value="default">Default Proxy</option>
-                                    <option value="scramjet">Scramjet (Coming Soon)</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="browser-info-bar">
-                            <span class="proxy-badge">🛡️ Proxied Connection</span>
-                            <span class="proxy-info">Powered by CloudettteVM Secure Proxy • <a href="https://github.com/MercuryWorkshop/scramjet" target="_blank">Scramjet Integration Coming Soon</a></span>
                         </div>
                         <iframe id="browser-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
                     </div>
@@ -264,22 +252,35 @@
                     </div>
                 </div>
 
-                <!-- History Window -->
-                <div class="window" id="history-window" style="display: none;">
+                <!-- Activity Window -->
+                <div class="window" id="activity-window" style="display: none;">
                     <div class="window-titlebar">
                         <div class="window-title">
-                            <span class="window-icon">📜</span>
-                            <span>Browser History</span>
+                            <span class="window-icon">📊</span>
+                            <span>Activity</span>
                         </div>
                         <div class="window-controls">
-                            <button class="window-btn minimize" data-window="history">−</button>
-                            <button class="window-btn maximize" data-window="history">□</button>
-                            <button class="window-btn close" data-window="history">×</button>
+                            <button class="window-btn minimize" data-window="activity">−</button>
+                            <button class="window-btn maximize" data-window="activity">□</button>
+                            <button class="window-btn close" data-window="activity">×</button>
                         </div>
                     </div>
                     <div class="window-content window-scrollable">
-                        <div id="history-list" class="history-list">
-                            <p class="loading">Loading...</p>
+                        <div class="activity-tabs">
+                            <button class="activity-tab active" data-tab="browsing">🌐 Browsing</button>
+                            <button class="activity-tab" data-tab="terminal">💻 Terminal</button>
+                            <button class="activity-tab" data-tab="apps">📦 Apps</button>
+                        </div>
+                        <div id="activity-content" class="activity-content">
+                            <div id="browsing-history" class="activity-list">
+                                <p class="loading">Loading...</p>
+                            </div>
+                            <div id="terminal-history" class="activity-list" style="display: none;">
+                                <p class="loading">Loading...</p>
+                            </div>
+                            <div id="apps-history" class="activity-list" style="display: none;">
+                                <p class="loading">Loading...</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -356,9 +357,9 @@
                     <span class="menu-icon">📱</span>
                     <span>My Apps</span>
                 </div>
-                <div class="start-menu-item" data-app="history">
-                    <span class="menu-icon">📜</span>
-                    <span>History</span>
+                <div class="start-menu-item" data-app="activity">
+                    <span class="menu-icon">📊</span>
+                    <span>Activity</span>
                 </div>
                 <div class="start-menu-divider"></div>
                 <div class="start-menu-item" data-app="settings">

@@ -236,7 +236,7 @@ function updateTaskbar() {
         browser: { icon: '🌐', name: 'Browser' },
         store: { icon: '📦', name: 'App Store' },
         apps: { icon: '📱', name: 'My Apps' },
-        history: { icon: '📜', name: 'History' },
+        activity: { icon: '📊', name: 'Activity' },
         settings: { icon: '⚙️', name: 'Settings' }
     };
 
@@ -422,23 +422,27 @@ async function saveToHistory(url, title) {
 }
 
 async function loadHistory() {
+    await loadBrowsingHistory();
+}
+
+async function loadBrowsingHistory() {
     try {
         const response = await fetch('/api/history');
         const history = await response.json();
         
-        const historyList = document.getElementById('history-list');
+        const historyList = document.getElementById('browsing-history');
+        if (!historyList) return;
+        
         if (history.length === 0) {
             historyList.innerHTML = '<p class="loading">No browsing history yet</p>';
             return;
         }
 
         historyList.innerHTML = history.map(item => `
-            <div class="history-item">
-                <div>
-                    <h4>${escapeHtml(item.title || 'Untitled')}</h4>
-                    <p><a href="#" class="history-link" data-url="${escapeHtml(item.url)}">${escapeHtml(item.url)}</a></p>
-                    <p>${new Date(item.visited_at).toLocaleString()}</p>
-                </div>
+            <div class="activity-item">
+                <h4>${escapeHtml(item.title || 'Untitled')}</h4>
+                <p><a href="#" class="history-link" data-url="${escapeHtml(item.url)}">${escapeHtml(item.url)}</a></p>
+                <p>${new Date(item.visited_at).toLocaleString()}</p>
             </div>
         `).join('');
 
@@ -450,7 +454,91 @@ async function loadHistory() {
             });
         });
     } catch (error) {
-        document.getElementById('history-list').innerHTML = '<p class="loading">Failed to load history</p>';
+        const historyList = document.getElementById('browsing-history');
+        if (historyList) {
+            historyList.innerHTML = '<p class="loading">Failed to load history</p>';
+        }
+    }
+}
+
+async function loadTerminalHistory() {
+    try {
+        const response = await fetch('/api/terminal/commands');
+        const commands = await response.json();
+        
+        const terminalList = document.getElementById('terminal-history');
+        if (!terminalList) return;
+        
+        if (commands.length === 0) {
+            terminalList.innerHTML = '<p class="loading">No terminal commands recorded yet</p>';
+            return;
+        }
+
+        terminalList.innerHTML = commands.map(cmd => `
+            <div class="activity-item">
+                <h4><code>${escapeHtml(cmd.command)}</code></h4>
+                <p>${new Date(cmd.executed_at).toLocaleString()}</p>
+            </div>
+        `).join('');
+    } catch (error) {
+        const terminalList = document.getElementById('terminal-history');
+        if (terminalList) {
+            terminalList.innerHTML = '<p class="loading">Terminal history not available</p>';
+        }
+    }
+}
+
+async function loadAppsHistory() {
+    try {
+        const response = await fetch('/api/apps/installed');
+        const apps = await response.json();
+        
+        const appsList = document.getElementById('apps-history');
+        if (!appsList) return;
+        
+        if (apps.length === 0) {
+            appsList.innerHTML = '<p class="loading">No apps installed yet</p>';
+            return;
+        }
+
+        appsList.innerHTML = apps.map(app => `
+            <div class="activity-item">
+                <h4>${escapeHtml(app.app_name)}</h4>
+                <p>Version: ${escapeHtml(app.app_version || 'latest')}</p>
+                <p>Installed: ${new Date(app.installed_at).toLocaleString()}</p>
+            </div>
+        `).join('');
+    } catch (error) {
+        const appsList = document.getElementById('apps-history');
+        if (appsList) {
+            appsList.innerHTML = '<p class="loading">Failed to load apps</p>';
+        }
+    }
+}
+
+function switchActivityTab(tabName) {
+    // Update tab buttons
+    document.querySelectorAll('.activity-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.tab === tabName);
+    });
+
+    // Show/hide content
+    document.querySelectorAll('.activity-list').forEach(list => {
+        list.style.display = 'none';
+    });
+
+    const targetList = document.getElementById(`${tabName}-history`);
+    if (targetList) {
+        targetList.style.display = 'flex';
+    }
+
+    // Load data for the tab
+    if (tabName === 'browsing') {
+        loadBrowsingHistory();
+    } else if (tabName === 'terminal') {
+        loadTerminalHistory();
+    } else if (tabName === 'apps') {
+        loadAppsHistory();
     }
 }
 
@@ -626,6 +714,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const appName = btn.dataset.app;
             const version = btn.dataset.version;
             installApp(appName, version);
+        });
+    });
+
+    // Activity tabs
+    document.querySelectorAll('.activity-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            switchActivityTab(tab.dataset.tab);
         });
     });
 
