@@ -485,6 +485,37 @@
                                 </div>
                                 <button id="logout-btn" class="settings-btn danger">Logout</button>
                             </div>
+                            
+                            <div class="settings-section">
+                                <h3>🌐 Browser Settings</h3>
+                                <div class="settings-group">
+                                    <label class="settings-label">
+                                        <span>Search Engine</span>
+                                        <select id="search-engine-select" class="settings-select">
+                                            <option value="duckduckgo">DuckDuckGo</option>
+                                            <option value="google">Google</option>
+                                            <option value="bing">Bing</option>
+                                            <option value="brave">Brave Search</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="settings-group">
+                                    <label class="settings-label">
+                                        <span>Proxy Mode</span>
+                                        <select id="proxy-mode-select" class="settings-select">
+                                            <option value="none">Direct Connection</option>
+                                            <option value="scramjet">Scramjet Proxy (Recommended)</option>
+                                            <option value="ultraviolet">Ultraviolet Proxy</option>
+                                        </select>
+                                    </label>
+                                    <p class="settings-hint">⚡ Scramjet proxy bypasses restrictions and provides faster, unrestricted browsing</p>
+                                </div>
+                                <div id="proxy-status" class="proxy-status">
+                                    <span class="status-indicator">●</span>
+                                    <span id="proxy-status-text">Proxy: Disabled</span>
+                                </div>
+                            </div>
+                            
                             <div class="settings-section">
                                 <h3>ℹ️ About</h3>
                                 <p>CloudettteVM v1.0.0</p>

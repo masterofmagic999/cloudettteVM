@@ -410,7 +410,63 @@ app.delete('/api/files', apiLimiter, requireAuth, (req, res) => {
   }
 });
 
-// Secure web proxy
+// Scramjet proxy endpoint
+app.use('/scramjet', requireAuth, (req, res, next) => {
+  const pathParts = req.path.substring(1); // Remove leading slash
+  const targetUrl = decodeURIComponent(pathParts);
+  
+  if (!targetUrl) {
+    return res.status(400).send('<html><body style="font-family:system-ui;padding:40px;background:#0f172a;color:#e2e8f0;text-align:center;"><h2>❌ Error</h2><p>URL required</p></body></html>');
+  }
+
+  try {
+    const url = new URL(targetUrl);
+    proxy(url.origin, {
+      proxyReqPathResolver: () => url.pathname + url.search,
+      userResDecorator: (proxyRes, proxyResData) => {
+        return proxyResData;
+      },
+      proxyReqOptDecorator: (proxyReqOpts) => {
+        proxyReqOpts.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+        proxyReqOpts.headers['Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8';
+        proxyReqOpts.headers['Accept-Language'] = 'en-US,en;q=0.5';
+        delete proxyReqOpts.headers['host'];
+        return proxyReqOpts;
+      }
+    })(req, res, next);
+  } catch (error) {
+    res.status(400).send('<html><body style="font-family:system-ui;padding:40px;background:#0f172a;color:#e2e8f0;text-align:center;"><h2>❌ Invalid URL</h2><p>' + error.message + '</p></body></html>');
+  }
+});
+
+// Ultraviolet proxy endpoint  
+app.use('/uv/service', requireAuth, (req, res, next) => {
+  const pathParts = req.path.substring(1); // Remove leading slash  
+  const targetUrl = decodeURIComponent(pathParts);
+  
+  if (!targetUrl) {
+    return res.status(400).send('<html><body style="font-family:system-ui;padding:40px;background:#0f172a;color:#e2e8f0;text-align:center;"><h2>❌ Error</h2><p>URL required</p></body></html>');
+  }
+
+  try {
+    const url = new URL(targetUrl);
+    proxy(url.origin, {
+      proxyReqPathResolver: () => url.pathname + url.search,
+      userResDecorator: (proxyRes, proxyResData) => {
+        return proxyResData;
+      },
+      proxyReqOptDecorator: (proxyReqOpts) => {
+        proxyReqOpts.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+        delete proxyReqOpts.headers['host'];
+        return proxyReqOpts;
+      }
+    })(req, res, next);
+  } catch (error) {
+    res.status(400).send('<html><body style="font-family:system-ui;padding:40px;background:#0f172a;color:#e2e8f0;text-align:center;"><h2>❌ Invalid URL</h2><p>' + error.message + '</p></body></html>');
+  }
+});
+
+// Secure web proxy (legacy)
 app.use('/proxy', requireAuth, (req, res, next) => {
   const targetUrl = req.query.url;
   if (!targetUrl) {
@@ -426,6 +482,7 @@ app.use('/proxy', requireAuth, (req, res, next) => {
       },
       proxyReqOptDecorator: (proxyReqOpts) => {
         proxyReqOpts.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+        delete proxyReqOpts.headers['host'];
         return proxyReqOpts;
       }
     })(req, res, next);
