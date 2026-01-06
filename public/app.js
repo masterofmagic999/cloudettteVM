@@ -6,6 +6,27 @@ let openWindows = {};
 let windowZIndex = 100;
 let activeWindow = null;
 
+// Browser settings
+let browserSettings = {
+    searchEngine: 'duckduckgo',
+    proxyMode: 'scramjet' // Default to Scramjet proxy
+};
+
+// Load browser settings from localStorage
+function loadBrowserSettings() {
+    const saved = localStorage.getItem('browserSettings');
+    if (saved) {
+        browserSettings = JSON.parse(saved);
+    }
+    return browserSettings;
+}
+
+// Save browser settings to localStorage
+function saveBrowserSettings() {
+    localStorage.setItem('browserSettings', JSON.stringify(browserSettings));
+    updateProxyStatus();
+}
+
 // Toast notification function
 function showToast(message, type = 'success') {
     const toast = document.getElementById('toast');
@@ -129,6 +150,8 @@ function showAppScreen() {
     document.getElementById('app-screen').classList.add('active');
     document.getElementById('username-display').textContent = currentUser;
     document.getElementById('settings-username').textContent = currentUser;
+    loadBrowserSettings();
+    initializeSettingsUI();
     loadInstalledApps();
     loadHistory();
     updateClock();
@@ -140,6 +163,50 @@ function updateClock() {
     if (clock) {
         const now = new Date();
         clock.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+}
+
+// Initialize settings UI with current values
+function initializeSettingsUI() {
+    const searchEngineSelect = document.getElementById('search-engine-select');
+    const proxyModeSelect = document.getElementById('proxy-mode-select');
+    
+    if (searchEngineSelect) {
+        searchEngineSelect.value = browserSettings.searchEngine;
+        searchEngineSelect.addEventListener('change', (e) => {
+            browserSettings.searchEngine = e.target.value;
+            saveBrowserSettings();
+            showToast(`Search engine changed to ${e.target.options[e.target.selectedIndex].text}`);
+        });
+    }
+    
+    if (proxyModeSelect) {
+        proxyModeSelect.value = browserSettings.proxyMode;
+        proxyModeSelect.addEventListener('change', (e) => {
+            browserSettings.proxyMode = e.target.value;
+            saveBrowserSettings();
+            const modeName = e.target.options[e.target.selectedIndex].text;
+            showToast(`Proxy mode changed to ${modeName}`);
+        });
+    }
+    
+    updateProxyStatus();
+}
+
+// Update proxy status indicator
+function updateProxyStatus() {
+    const proxyStatus = document.getElementById('proxy-status');
+    const proxyStatusText = document.getElementById('proxy-status-text');
+    
+    if (proxyStatus && proxyStatusText) {
+        if (browserSettings.proxyMode === 'none') {
+            proxyStatus.setAttribute('data-status', 'inactive');
+            proxyStatusText.textContent = 'Proxy: Disabled (Direct Connection)';
+        } else {
+            proxyStatus.setAttribute('data-status', 'active');
+            const proxyName = browserSettings.proxyMode === 'scramjet' ? 'Scramjet' : 'Ultraviolet';
+            proxyStatusText.textContent = `Proxy: Active (${proxyName})`;
+        }
     }
 }
 
@@ -422,23 +489,72 @@ async function saveTerminalCommand(command) {
 }
 
 // Browser functions
+function getSearchUrl(query, engine) {
+    const engines = {
+        'duckduckgo': `https://duckduckgo.com/?q=${encodeURIComponent(query)}`,
+        'google': `https://www.google.com/search?q=${encodeURIComponent(query)}`,
+        'bing': `https://www.bing.com/search?q=${encodeURIComponent(query)}`,
+        'brave': `https://search.brave.com/search?q=${encodeURIComponent(query)}`
+    };
+    return engines[engine] || engines['duckduckgo'];
+}
+
+function getProxyUrl(url) {
+    const proxyMode = browserSettings.proxyMode;
+    
+    if (proxyMode === 'none') {
+        return url;
+    } else if (proxyMode === 'scramjet') {
+        // Scramjet proxy format
+        return `/scramjet/${encodeURIComponent(url)}`;
+    } else if (proxyMode === 'ultraviolet') {
+        // Ultraviolet proxy format
+        return `/uv/service/${encodeURIComponent(url)}`;
+    }
+    
+    return url;
+}
+
 function navigateTo() {
     const urlInput = document.getElementById('url-input').value;
     if (!urlInput) {
-        showToast('Please enter a URL', 'error');
+        showToast('Please enter a URL or search query', 'error');
         return;
     }
 
-    let url = urlInput;
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        url = 'https://' + url;
+    let url = urlInput.trim();
+    
+    // Check if it looks like a search query (no dots or spaces, or contains spaces)
+    const isSearchQuery = !url.includes('.') || url.includes(' ');
+    
+    if (isSearchQuery && !url.startsWith('http://') && !url.startsWith('https://')) {
+        // It's a search query - use selected search engine
+        url = getSearchUrl(url, browserSettings.searchEngine);
+    } else {
+        // It's a URL
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'https://' + url;
+        }
     }
 
-    const proxyUrl = `/proxy?url=${encodeURIComponent(url)}`;
+    // Apply proxy if enabled
+    const finalUrl = getProxyUrl(url);
+    
     const iframe = document.getElementById('browser-frame');
-    iframe.src = proxyUrl;
-
-    saveToHistory(url, 'Web Page');
+    
+    // Clear previous content and show loading message
+    iframe.srcdoc = '<html><body style="margin:0;padding:40px;font-family:system-ui;background:#0f172a;color:#e2e8f0;"><div style="max-width:600px;margin:0 auto;text-align:center;"><div style="width:64px;height:64px;margin:0 auto 24px;border:3px solid #3b82f6;border-radius:50%;border-top-color:transparent;animation:spin 1s linear infinite;"></div><h2 style="margin:0 0 16px;color:#3b82f6;">🌐 Loading...</h2><p style="color:#94a3b8;">Attempting to load: <code style="background:#1e293b;padding:4px 12px;border-radius:6px;display:inline-block;margin-top:8px;color:#60a5fa;">' + url + '</code></p><p style="color:#64748b;font-size:14px;margin-top:20px;">Using ' + browserSettings.proxyMode.toUpperCase() + ' mode</p></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style></body></html>';
+    
+    // Try to load the URL
+    setTimeout(() => {
+        try {
+            iframe.src = finalUrl;
+            saveToHistory(url, 'Web Page');
+        } catch (error) {
+            console.error('Failed to load URL:', error);
+            iframe.srcdoc = '<html><body style="margin:0;padding:40px;font-family:system-ui;background:#0f172a;color:#e2e8f0;"><div style="max-width:600px;margin:0 auto;text-align:center;"><h2 style="color:#ef4444;">⚠️ Cannot Load Page</h2><p>The requested page could not be loaded.</p><p><strong>URL:</strong> <code style="background:#1e293b;padding:4px 12px;border-radius:6px;display:inline-block;margin-top:8px;color:#60a5fa;word-break:break-all;">' + url + '</code></p><p style="color:#64748b;font-size:14px;margin-top:20px;">Try enabling a different proxy mode in Settings.</p><a href="' + url + '" target="_blank" style="display:inline-block;margin-top:20px;padding:12px 24px;background:#3b82f6;color:white;text-decoration:none;border-radius:8px;font-weight:600;">Open in New Tab</a></div></body></html>';
+        }
+    }, 100);
 }
 
 function refreshBrowser() {
@@ -607,10 +723,25 @@ async function installApp(appName, version) {
 
         if (socket && terminal) {
             let installCmd = '';
-            if (['nodejs', 'python3', 'git', 'vim', 'curl', 'wget'].includes(appName)) {
+            // Standard apt packages
+            const aptPackages = [
+                'nodejs', 'python3', 'git', 'vim', 'nano', 'curl', 'wget', 
+                'htop', 'tree', 'zip', 'unzip', 'build-essential', 'ruby',
+                'php', 'openjdk-11-jdk', 'cargo', 'golang', 'sqlite3',
+                'mysql-client', 'postgresql-client', 'jq', 'netcat',
+                'net-tools', 'openssh-client', 'python3-pip'
+            ];
+            
+            if (aptPackages.includes(appName)) {
                 installCmd = `sudo apt-get update && sudo apt-get install -y ${appName}\r`;
+            } else if (appName === 'zip') {
+                // Install both zip and unzip
+                installCmd = `sudo apt-get update && sudo apt-get install -y zip unzip\r`;
             }
-            socket.emit('terminal-input', installCmd);
+            
+            if (installCmd) {
+                socket.emit('terminal-input', installCmd);
+            }
         }
 
         showToast(`${appName} installation started!`, 'success');
@@ -1101,4 +1232,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (notesNewBtn) notesNewBtn.addEventListener('click', createNewNote);
     if (notesSaveBtn) notesSaveBtn.addEventListener('click', saveNote);
     if (notesDeleteBtn) notesDeleteBtn.addEventListener('click', deleteNote);
+    
+    // Browser iframe load error handler
+    const browserFrame = document.getElementById('browser-frame');
+    if (browserFrame) {
+        browserFrame.addEventListener('error', () => {
+            const url = browserFrame.src;
+            browserFrame.srcdoc = '<html><body style="margin:0;padding:40px;font-family:system-ui;background:#f5f5f5;color:#333;"><div style="max-width:600px;margin:0 auto;text-align:center;"><h2>⚠️ Failed to Load</h2><p>The page could not be loaded. This may be due to:</p><ul style="text-align:left;display:inline-block;"><li>The website blocking iframe access</li><li>Network connectivity issues</li><li>CORS security restrictions</li></ul><p style="margin-top:20px;"><strong>URL:</strong> <code style="background:#fff;padding:4px 8px;border-radius:4px;display:block;margin-top:8px;word-break:break-all;">' + url + '</code></p><a href="' + url + '" target="_blank" style="display:inline-block;margin-top:20px;padding:10px 20px;background:#6366f1;color:white;text-decoration:none;border-radius:6px;">Open in New Tab</a></div></body></html>';
+        });
+    }
 });
